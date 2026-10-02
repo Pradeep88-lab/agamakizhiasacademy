@@ -5,6 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: '/agamakizhiasacademy/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
