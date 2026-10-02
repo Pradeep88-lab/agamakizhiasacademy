@@ -1,0 +1,54 @@
+{
+  "collections": {
+    "users": {
+      "documents": {
+        "admin_user_id": {
+          "email": "admin@agamakizh.com",
+          "role": "admin",
+          "name": "Admin"
+        }
+      }
+    },
+    "studyMaterials": {
+      "documents": {
+        "example_pdf": {
+          "title": "Indian Polity - Basic Structure",
+          "category": "TNPSC",
+          "pdfUrl": "https://example.com/polity.pdf",
+          "uploadDate": "2024-09-27"
+        }
+      }
+    },
+    "quizzes": {
+      "documents": {
+        "example_quiz": {
+          "title": "TNPSC Group I - Prelims Mock",
+          "duration": "180 min",
+          "questionsCount": 200,
+          "difficulty": "High",
+          "category": "TNPSC",
+          "questions": [
+            {
+              "textEn": "Which schedule contains division of powers?",
+              "textTa": "அதிகாரப் பகிர்வு எந்த அட்டவணையில் உள்ளது?",
+              "optionsEn": ["5th", "6th", "7th", "8th"],
+              "optionsTa": ["5வது", "6வது", "7வது", "8வது"],
+              "correctOption": 2
+            }
+          ]
+        }
+      }
+    },
+    "notifications": {
+      "documents": {
+        "example_notif": {
+          "title": "TNPSC Group I Notification",
+          "date": "2024-10-15",
+          "status": "Upcoming",
+          "category": "Civil Services",
+          "pdfUrl": "https://example.com/notif.pdf"
+        }
+      }
+    }
+  }
+}

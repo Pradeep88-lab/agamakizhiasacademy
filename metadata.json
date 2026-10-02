@@ -1,0 +1,6 @@
+{
+  "name": "Agamakizh IAS Academy",
+  "description": "Premium IAS coaching portal with comprehensive mock tests and performance analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
