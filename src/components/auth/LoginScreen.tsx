@@ -1089,33 +1089,11 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 <p className="text-xs text-slate-500 mt-1">Notifications sent to your registered contact</p>
               </div>
 
-              {/* Email notification card */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-2xl p-3.5 mb-3"
-              >
-                <div className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
-                  <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">Email Sent ✓</p>
-                    <span className="text-[10px] text-blue-400">just now</span>
-                  </div>
-                  <p className="text-xs font-semibold text-slate-800 leading-snug">
-                    Hello Agamakizh IAS Academy 🎓<br />
-                    <span className="text-slate-600 font-normal">TNPSC · SSC · Railway Free Class — Happy Learning! 🚀</span>
-                  </p>
-                </div>
-              </motion.div>
-
               {/* WhatsApp notification card */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.2 }}
                 className="flex items-start gap-3 bg-emerald-50 border border-emerald-100 rounded-2xl p-3.5"
               >
                 <div className="w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
