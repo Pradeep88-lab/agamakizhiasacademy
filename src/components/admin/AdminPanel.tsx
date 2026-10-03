@@ -1770,7 +1770,43 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                       </div>
                     </div>
                   </div>
+                  {/* SECTION 2: VIDEO CLASS UPLOAD/LINK */}
+                  <div className="bg-white p-7 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 bg-red-50 text-red-600 rounded-xl flex items-center justify-center">
+                          <Video className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-bold text-slate-900">2. Video Lecture Class</h4>
+                          <p className="text-xs text-slate-400">Add YouTube Video URL for this chapter.</p>
+                        </div>
+                      </div>
+                    </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">YouTube Video URL</label>
+                        <input
+                          type="text"
+                          value={chapterForm.videoUrl}
+                          onChange={(e) => setChapterForm({ ...chapterForm, videoUrl: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                          placeholder="e.g., https://www.youtube.com/watch?v=..."
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Video Title / Display Label</label>
+                        <input
+                          type="text"
+                          value={chapterForm.videoTitle}
+                          onChange={(e) => setChapterForm({ ...chapterForm, videoTitle: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                          placeholder="e.g., Chapter 1: Introduction to Mechanics"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
                   {/* SECTION 3: PRACTICE TEST (MCQs) - BILINGUAL */}
                   <div className="bg-white p-7 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
