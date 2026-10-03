@@ -73,20 +73,16 @@ jobs:
         chmod +x ./gradlew
         ./gradlew bundleRelease
         
-    - name: Decode Keystore & Sign AAB
+    - name: Sign AAB
       working-directory: ./android
       env:
-        KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       run: |
-        # Decode the keystore
-       
-        
-        # Sign the AAB manually
+        # Sign the AAB manually using the committed keystore
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-          -keystore app/release-key.jks \
+          -keystore app/upload-keystore.jks \
           -storepass "$KEYSTORE_PASSWORD" \
           -keypass "$KEY_PASSWORD" \
           app/build/outputs/bundle/release/app-release.aab \
