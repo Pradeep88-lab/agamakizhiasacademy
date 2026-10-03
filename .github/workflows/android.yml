@@ -66,12 +66,6 @@ jobs:
       
     - name: Add & Sync Capacitor
       run: npx cap add android
-      
-    - name: Decode Keystore
-      env:
-        ENCODED_STRING: ${{ secrets.KEYSTORE_B64 }}
-      run: |
-        echo $ENCODED_STRING | base64 -di > android/app/release-key.keystore
 
     - name: Build AAB (Release)
       working-directory: ./android
