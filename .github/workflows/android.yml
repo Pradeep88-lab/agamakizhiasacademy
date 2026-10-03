@@ -1,47 +1,48 @@
-name: Build Android APK
-
-on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
-
-jobs:
-  build-android:
+  build-android-release:
+    name: Build Release AAB (Play Store)
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm install --legacy-peer-deps
-
-    - name: Build Web App
-      run: npm run build
-
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with: { node-version: '22', cache: 'npm' }
+    
+    - name: Install dependencies & Build Web App
+      run: |
+        npm install --legacy-peer-deps
+        npm run build
+        
     - name: Setup Java JDK
       uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      with: { distribution: 'temurin', java-version: '17' }
+      
+    - name: Add & Sync Capacitor
+      # If you committed the android folder, change 'add' to 'sync'
+      run: npx cap add android
+      
+    - name: Decode Keystore
+      env:
+        ENCODED_STRING: ${{ secrets.KEYSTORE_B64 }}
+      run: |
+        echo $ENCODED_STRING | base64 -di > android/app/release-key.keystore
 
-    - name: Sync Capacitor
-      run: npx cap sync android
-
-    - name: Build APK (Debug)
+    - name: Build AAB (Release)
       working-directory: ./android
       run: |
         chmod +x ./gradlew
-        ./gradlew assembleDebug
+        ./gradlew bundleRelease
+        
+    - name: Sign AAB
+      id: sign_app
+      uses: r0adkll/sign-android-release@v1
+      with:
+        releaseDirectory: android/app/build/outputs/bundle/release
+        signingKeyBase64: ${{ secrets.KEYSTORE_B64 }}
+        alias: ${{ secrets.KEY_ALIAS }}
+        keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-    - name: Upload APK Artifact
+    - name: Upload Release AAB Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: agamakizh-ias-academy-debug.apk
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+        name: agamakizh-ias-academy-release.aab
+        path: ${{steps.sign_app.outputs.signedReleaseFile}}
