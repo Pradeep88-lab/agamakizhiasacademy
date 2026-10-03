@@ -710,9 +710,18 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     const key = `${chapterForm.subjectId}_ch_${chapterForm.chapterNumber}`;
 
     const videoInfo = formatVideoEmbed(chapterForm.videoUrl);
+    
+    // Strip large base64 strings from PDFs before saving to avoid quota limits
+    const cleanedPdfs = (chapterForm.pdfs || []).map(pdf => ({
+      ...pdf,
+      pdfUrl: pdf.pdfUrl.startsWith('data:') ? 'local-indexeddb-blob' : pdf.pdfUrl
+    }));
+    
     const cleanedChapterForm = {
       ...chapterForm,
       videoUrl: videoInfo.embedUrl || chapterForm.videoUrl,
+      pdfUrl: chapterForm.pdfUrl.startsWith('data:') ? 'local-indexeddb-blob' : chapterForm.pdfUrl,
+      pdfs: cleanedPdfs,
       updatedAt: new Date().toISOString()
     };
 
