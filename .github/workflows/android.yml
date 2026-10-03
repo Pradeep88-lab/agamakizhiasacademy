@@ -82,7 +82,7 @@ jobs:
       run: |
         # Sign the AAB manually using the committed keystore
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-          -keystore app/upload-keystore.jks \
+          -keystore ../upload-keystore.jks \
           -storepass "$KEYSTORE_PASSWORD" \
           -keypass "$KEY_PASSWORD" \
           app/build/outputs/bundle/release/app-release.aab \
