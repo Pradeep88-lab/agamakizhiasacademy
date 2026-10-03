@@ -1224,56 +1224,105 @@ export default function SubjectChapterView({
                 </div>
               </div>
 
-              <div className="p-6 bg-indigo-50/40 rounded-2xl border border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-red-500 border border-slate-200 shadow-xs shrink-0">
-                    <FileText className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-bold text-slate-900 text-sm truncate">
-                      {detailedContent?.pdfFileName || detailedContent?.pdfTitle || `${subject.name}_Chapter${currentChapter}_Complete_Notes.pdf`}
-                    </h4>
-                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
-                      <span>PDF Document</span>
-                      <span>•</span>
-                      <span>{detailedContent?.pdfSize || 'Official Revision Material'}</span>
-                      {detailedContent?.pdfFileName && (
-                        <>
+              <div className="space-y-4">
+                {/* Legacy single PDF support */}
+                {detailedContent?.pdfFileName && (!detailedContent?.pdfs || detailedContent?.pdfs.length === 0) && (
+                  <div className="p-6 bg-indigo-50/40 rounded-2xl border border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-red-500 border border-slate-200 shadow-xs shrink-0">
+                        <FileText className="h-6 w-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-slate-900 text-sm truncate">
+                          {detailedContent?.pdfFileName || detailedContent?.pdfTitle || `${subject.name}_Chapter${currentChapter}_Complete_Notes.pdf`}
+                        </h4>
+                        <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                          <span>PDF Document</span>
                           <span>•</span>
+                          <span>{detailedContent?.pdfSize || 'Official Revision Material'}</span>
                           <span className="text-emerald-700 font-semibold bg-emerald-100/70 px-2 py-0.5 rounded text-[11px] flex items-center gap-1">
                             <CheckCircle2 className="h-3 w-3" /> Latest Admin Upload
                           </span>
-                        </>
-                      )}
-                    </p>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button 
+                        onClick={() => {
+                          const displayTitle = detailedContent.pdfTitle || detailedContent.pdfFileName || `${subject.name} Chapter ${currentChapter} Notes`;
+                          const currentUrl = detailedContent.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          openPdfPreview(currentUrl, customContent?._pdfUrl_indexedDbKey, displayTitle);
+                        }}
+                        className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer hover:shadow-indigo-500/25"
+                      >
+                        <Eye className="h-4 w-4" />
+                        Open PDF Notes
+                      </button>
+
+                      <button 
+                        onClick={() => {
+                          const fileName = detailedContent.pdfFileName || detailedContent.pdfTitle || `${subject.name}_Chapter${currentChapter}_Notes.pdf`;
+                          const currentUrl = detailedContent.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          downloadPdfFile(currentUrl, customContent?._pdfUrl_indexedDbKey, fileName);
+                        }}
+                        className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+                      >
+                        <Download className="h-4 w-4 text-slate-600" />
+                        Download PDF
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <button 
-                    onClick={() => {
-                      const displayTitle = detailedContent.pdfTitle || detailedContent.pdfFileName || `${subject.name} Chapter ${currentChapter} Notes`;
-                      const currentUrl = detailedContent.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-                      openPdfPreview(currentUrl, customContent?._pdfUrl_indexedDbKey, displayTitle);
-                    }}
-                    className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer hover:shadow-indigo-500/25"
-                  >
-                    <Eye className="h-4 w-4" />
-                    Open PDF Notes
-                  </button>
+                {/* Render pdfs array */}
+                {(detailedContent?.pdfs || []).map((pdf: any, idx: number) => (
+                  <div key={idx} className="p-6 bg-indigo-50/40 rounded-2xl border border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-red-500 border border-slate-200 shadow-xs shrink-0">
+                        <FileText className="h-6 w-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-slate-900 text-sm truncate">
+                          {pdf.pdfTitle || pdf.pdfFileName || `Chapter Note ${idx + 1}`}
+                        </h4>
+                        <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                          <span>PDF Document</span>
+                          <span>•</span>
+                          <span>{pdf.pdfSize || 'Official Revision Material'}</span>
+                          <span className="text-emerald-700 font-semibold bg-emerald-100/70 px-2 py-0.5 rounded text-[11px] flex items-center gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> Latest Admin Upload
+                          </span>
+                        </p>
+                      </div>
+                    </div>
 
-                  <button 
-                    onClick={() => {
-                      const fileName = detailedContent.pdfFileName || detailedContent.pdfTitle || `${subject.name}_Chapter${currentChapter}_Notes.pdf`;
-                      const currentUrl = detailedContent.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-                      downloadPdfFile(currentUrl, customContent?._pdfUrl_indexedDbKey, fileName);
-                    }}
-                    className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer"
-                  >
-                    <Download className="h-4 w-4 text-slate-600" />
-                    Download PDF
-                  </button>
-                </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button 
+                        onClick={() => {
+                          const displayTitle = pdf.pdfTitle || pdf.pdfFileName || `Chapter Note ${idx + 1}`;
+                          const currentUrl = pdf.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          openPdfPreview(currentUrl, pdf._pdfUrl_indexedDbKey, displayTitle);
+                        }}
+                        className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer hover:shadow-indigo-500/25"
+                      >
+                        <Eye className="h-4 w-4" />
+                        Open PDF
+                      </button>
+                      <button 
+                        onClick={() => {
+                          const fileName = pdf.pdfFileName || pdf.pdfTitle || `Chapter_Note_${idx + 1}.pdf`;
+                          const currentUrl = pdf.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          downloadPdfFile(currentUrl, pdf._pdfUrl_indexedDbKey, fileName);
+                        }}
+                        className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+                      >
+                        <Download className="h-4 w-4 text-slate-600" />
+                        Download
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
