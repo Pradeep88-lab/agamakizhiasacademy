@@ -82,7 +82,7 @@ jobs:
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
       run: |
         # Decode the keystore
-        echo "$KEYSTORE_B64" | base64 --decode > app/release-key.jks
+        echo "$KEYSTORE_B64" | base64 --decode --ignore-garbage > app/release-key.jks
         
         # Sign the AAB manually
         jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
