@@ -169,6 +169,13 @@ export interface ChapterModuleForm {
   pdfTitle: string;
   pdfSize?: string;
   _pdfUrl_indexedDbKey?: string;
+  pdfs?: Array<{
+    pdfUrl: string;
+    pdfFileName: string;
+    pdfTitle: string;
+    pdfSize?: string;
+    _pdfUrl_indexedDbKey?: string;
+  }>;
 }
 
 export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
@@ -615,13 +622,17 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       const blobKey = `chapter_pdf_${chapterForm.subjectId}_ch_${chapterForm.chapterNumber}_${Date.now()}`;
       await storeBlob(blobKey, dataUrl);
 
-      setChapterForm(prev => ({
-        ...prev,
+      const newPdf = {
         pdfUrl: dataUrl,
         pdfFileName: file.name,
         pdfTitle: file.name,
         pdfSize: sizeFormatted,
         _pdfUrl_indexedDbKey: blobKey
+      };
+
+      setChapterForm(prev => ({
+        ...prev,
+        pdfs: [...(prev.pdfs || []), newPdf]
       }));
       setSuccessMessage(`Attached ${file.name} (${sizeFormatted})! Click "Save & Publish" to update.`);
       setTimeout(() => setSuccessMessage(''), 3000);
@@ -629,16 +640,13 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     reader.readAsDataURL(file);
   };
 
-  // Remove or reset attached chapter PDF
-  const handleRemoveChapterPdf = () => {
-    setChapterForm(prev => ({
-      ...prev,
-      pdfUrl: '',
-      pdfFileName: '',
-      pdfTitle: `${prev.subjectId}_Chapter${prev.chapterNumber}_Notes.pdf`,
-      pdfSize: undefined,
-      _pdfUrl_indexedDbKey: undefined
-    }));
+  // Remove attached chapter PDF
+  const handleRemoveChapterPdf = (index: number) => {
+    setChapterForm(prev => {
+      const newPdfs = [...(prev.pdfs || [])];
+      newPdfs.splice(index, 1);
+      return { ...prev, pdfs: newPdfs };
+    });
     setSuccessMessage('Attached PDF removed. Click "Save & Publish" to update.');
     setTimeout(() => setSuccessMessage(''), 2500);
   };
@@ -2074,7 +2082,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
                       {/* PDF File Picker */}
                       <div className="border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-slate-50/60 rounded-2xl p-5 text-center transition-all cursor-pointer relative group">
                         <input
@@ -2086,83 +2094,113 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                         <div className="flex flex-col items-center gap-1.5 pointer-events-none">
                           <Upload className="h-6 w-6 text-indigo-500 group-hover:scale-110 transition-transform" />
                           <p className="text-xs font-bold text-slate-700">Click to upload Chapter PDF</p>
-                          <p className="text-[10px] text-slate-400">PDF files up to 30MB supported</p>
+                          <p className="text-[10px] text-slate-400">PDF files up to 30MB supported. You can upload multiple PDFs.</p>
                         </div>
                       </div>
 
-                      {/* URL input */}
+                      {/* List of PDFs */}
                       <div className="space-y-3">
-                        <div className="space-y-1.5">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Or PDF URL / Cloud Link</label>
-                          <input
-                            value={chapterForm.pdfUrl.startsWith('data:') ? '' : chapterForm.pdfUrl}
-                            onChange={e => setChapterForm({ ...chapterForm, pdfUrl: e.target.value })}
-                            disabled={chapterForm.pdfUrl.startsWith('data:')}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none"
-                            placeholder={chapterForm.pdfUrl.startsWith('data:') ? 'Local file uploaded' : 'https://...pdf'}
-                          />
-                        </div>
+                        {/* Render legacy PDF if present and pdfs array is empty */}
+                        {chapterForm.pdfFileName && (!chapterForm.pdfs || chapterForm.pdfs.length === 0) && (
+                          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-semibold text-emerald-800">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                                <FileCheck className="h-5 w-5 text-emerald-700" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-bold text-slate-900 truncate">{chapterForm.pdfFileName}</p>
+                                <p className="text-[11px] text-emerald-700 font-normal">
+                                  Attached • {chapterForm.pdfSize || 'Official Chapter Material'}
+                                </p>
+                              </div>
+                            </div>
 
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Document Title / Display Label</label>
-                            {chapterForm.pdfFileName && chapterForm.pdfTitle !== chapterForm.pdfFileName && (
+                            <div className="flex items-center gap-2 shrink-0">
                               <button
                                 type="button"
-                                onClick={() => setChapterForm({ ...chapterForm, pdfTitle: chapterForm.pdfFileName || '' })}
-                                className="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold underline cursor-pointer"
+                                onClick={() => openPdfPreview(chapterForm.pdfUrl, chapterForm._pdfUrl_indexedDbKey, chapterForm.pdfTitle || chapterForm.pdfFileName)}
+                                className="px-3.5 py-1.5 bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                                title="Preview attached PDF in a new tab"
                               >
-                                Use Attached Filename
+                                <Eye className="h-3.5 w-3.5 text-emerald-600" />
+                                <span>Preview</span>
                               </button>
-                            )}
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setChapterForm({
+                                    ...chapterForm,
+                                    pdfUrl: '',
+                                    pdfFileName: '',
+                                    pdfTitle: '',
+                                    pdfSize: undefined,
+                                    _pdfUrl_indexedDbKey: undefined
+                                  });
+                                }}
+                                className="px-3.5 py-1.5 bg-white border border-rose-200 hover:bg-rose-50 text-rose-600 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                <span>Remove</span>
+                              </button>
+                            </div>
                           </div>
-                          <input
-                            value={chapterForm.pdfTitle}
-                            onChange={e => setChapterForm({ ...chapterForm, pdfTitle: e.target.value })}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none"
-                            placeholder="e.g. Physics_Chapter1_Notes.pdf"
-                          />
-                        </div>
+                        )}
+
+                        {/* Render pdfs array */}
+                        {(chapterForm.pdfs || []).map((pdf, idx) => (
+                          <div key={idx} className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-semibold text-emerald-800">
+                            <div className="flex flex-col gap-2 min-w-0 w-full">
+                              <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                                  <FileCheck className="h-5 w-5 text-emerald-700" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-bold text-slate-900 truncate">{pdf.pdfFileName || 'PDF Document'}</p>
+                                  <p className="text-[11px] text-emerald-700 font-normal">
+                                    Attached • {pdf.pdfSize || 'Official Chapter Material'}
+                                  </p>
+                                </div>
+                              </div>
+                              
+                              <div className="mt-2">
+                                <label className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Document Title / Display Label</label>
+                                <input
+                                  value={pdf.pdfTitle}
+                                  onChange={e => {
+                                    const updatedPdfs = [...(chapterForm.pdfs || [])];
+                                    updatedPdfs[idx].pdfTitle = e.target.value;
+                                    setChapterForm({ ...chapterForm, pdfs: updatedPdfs });
+                                  }}
+                                  className="w-full bg-white border border-emerald-200 rounded-xl px-3 py-2 mt-1 text-xs focus:outline-none"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center mt-2 sm:mt-0">
+                              <button
+                                type="button"
+                                onClick={() => openPdfPreview(pdf.pdfUrl, pdf._pdfUrl_indexedDbKey, pdf.pdfTitle || pdf.pdfFileName)}
+                                className="px-3.5 py-1.5 bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                                title="Preview attached PDF in a new tab"
+                              >
+                                <Eye className="h-3.5 w-3.5 text-emerald-600" />
+                                <span>Preview</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveChapterPdf(idx)}
+                                className="px-3.5 py-1.5 bg-white border border-rose-200 hover:bg-rose-50 text-rose-600 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                <span>Remove</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-
-                    {chapterForm.pdfFileName && (
-                      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-semibold text-emerald-800">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-                            <FileCheck className="h-5 w-5 text-emerald-700" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-bold text-slate-900 truncate">{chapterForm.pdfFileName}</p>
-                            <p className="text-[11px] text-emerald-700 font-normal">
-                              Attached • {chapterForm.pdfSize || 'Official Chapter Material'}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => openPdfPreview(chapterForm.pdfUrl, chapterForm._pdfUrl_indexedDbKey, chapterForm.pdfTitle || chapterForm.pdfFileName)}
-                            className="px-3.5 py-1.5 bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                            title="Preview attached PDF in a new tab"
-                          >
-                            <Eye className="h-3.5 w-3.5 text-emerald-600" />
-                            <span>Preview PDF</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={handleRemoveChapterPdf}
-                            className="px-3.5 py-1.5 bg-white border border-rose-200 hover:bg-rose-50 text-rose-600 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                            title="Remove attached PDF"
-                          >
-                            <Trash2 className="h-3.5 w-3.5 text-rose-500" />
-                            <span>Remove</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   {/* Submit Button */}
