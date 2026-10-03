@@ -1,95 +1,82 @@
-name: Build Android App
+```yaml
+name: Build Android
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  build-android-debug:
-    name: Build Debug APK
+  build-android:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-        cache: 'npm'
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
-    - name: Install dependencies
-      run: npm install --legacy-peer-deps
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
 
-    - name: Build Web App
-      run: npm run build
+      - name: Flutter doctor
+        run: flutter doctor -v
 
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '21'
+      - name: Flutter pub get
+        run: flutter pub get
 
-    - name: Add & Sync Capacitor
-      run: npx cap add android
+      # Re-create the private keystore from GitHub Secrets
+      - name: Decode signing keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 --decode > android/app/new-upload.jks
+          test -f android/app/new-upload.jks
+          echo "Keystore created successfully."
 
-    - name: Build APK (Debug)
-      working-directory: ./android
-      run: |
-        chmod +x ./gradlew
-        ./gradlew assembleDebug
+      # Create Android signing configuration
+      - name: Create key.properties
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          cat > android/key.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=new-upload.jks
+          EOF
 
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: agamakizh-ias-academy-debug.apk
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+      # Build signed APK
+      - name: Build release APK
+        run: flutter build apk --release
 
-  build-android-release:
-    name: Build Release AAB (Play Store)
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with: { node-version: '22', cache: 'npm' }
-    
-    - name: Install dependencies & Build Web App
-      run: |
-        npm install --legacy-peer-deps
-        npm run build
-        
-    - name: Setup Java JDK
-      uses: actions/setup-java@v4
-      with: { distribution: 'temurin', java-version: '21' }
-      
-    - name: Add & Sync Capacitor
-      run: npx cap add android
+      # Build signed AAB
+      - name: Build release AAB
+        run: flutter build appbundle --release
 
-    - name: Build AAB (Release)
-      working-directory: ./android
-      run: |
-        chmod +x ./gradlew
-        ./gradlew bundleRelease
-        
-    - name: Sign AAB
-      working-directory: ./android
-      env:
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      run: |
-        # Sign the AAB manually using the committed keystore
-        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-          -keystore ../upload-keystore.jks \
-          -storepass "$KEYSTORE_PASSWORD" \
-          -keypass "$KEY_PASSWORD" \
-          app/build/outputs/bundle/release/app-release.aab \
-          "$KEY_ALIAS"
+      # Upload APK
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Agamakizh-Android-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
 
-    - name: Upload Release AAB Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: agamakizh-ias-academy-release.aab
-        path: android/app/build/outputs/bundle/release/app-release.aab
+      # Upload AAB
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: Agamakizh-Android-AAB
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+```
