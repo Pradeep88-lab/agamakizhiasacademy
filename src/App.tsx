@@ -16,9 +16,9 @@ export default function App() {
   const [view, setView] = useState<View>('login');
 
   useEffect(() => {
-    // Basic route detection
+    // Basic route detection that works locally and on GitHub Pages
     const path = window.location.pathname;
-    if (path === '/admin') {
+    if (path === '/admin' || path === '/agamakizhiasacademy/admin' || path.endsWith('/admin')) {
       setView('admin-login');
     }
   }, []);
