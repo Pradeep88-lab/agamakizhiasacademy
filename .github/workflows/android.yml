@@ -30,7 +30,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '21'
 
     - name: Add & Sync Capacitor
       run: npx cap add android
@@ -62,7 +62,7 @@ jobs:
         
     - name: Setup Java JDK
       uses: actions/setup-java@v4
-      with: { distribution: 'temurin', java-version: '17' }
+      with: { distribution: 'temurin', java-version: '21' }
       
     - name: Add & Sync Capacitor
       run: npx cap add android
