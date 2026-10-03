@@ -1251,7 +1251,7 @@ export default function SubjectChapterView({
                       <button 
                         onClick={() => {
                           const displayTitle = detailedContent.pdfTitle || detailedContent.pdfFileName || `${subject.name} Chapter ${currentChapter} Notes`;
-                          const currentUrl = detailedContent.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          const currentUrl = detailedContent.pdfUrl || (customContent?._pdfUrl_indexedDbKey ? '' : 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
                           openPdfPreview(currentUrl, customContent?._pdfUrl_indexedDbKey, displayTitle);
                         }}
                         className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer hover:shadow-indigo-500/25"
@@ -1263,7 +1263,7 @@ export default function SubjectChapterView({
                       <button 
                         onClick={() => {
                           const fileName = detailedContent.pdfFileName || detailedContent.pdfTitle || `${subject.name}_Chapter${currentChapter}_Notes.pdf`;
-                          const currentUrl = detailedContent.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          const currentUrl = detailedContent.pdfUrl || (customContent?._pdfUrl_indexedDbKey ? '' : 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
                           downloadPdfFile(currentUrl, customContent?._pdfUrl_indexedDbKey, fileName);
                         }}
                         className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer"
@@ -1301,7 +1301,7 @@ export default function SubjectChapterView({
                       <button 
                         onClick={() => {
                           const displayTitle = pdf.pdfTitle || pdf.pdfFileName || `Chapter Note ${idx + 1}`;
-                          const currentUrl = pdf.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          const currentUrl = pdf.pdfUrl || (pdf._pdfUrl_indexedDbKey ? '' : 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
                           openPdfPreview(currentUrl, pdf._pdfUrl_indexedDbKey, displayTitle);
                         }}
                         className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer hover:shadow-indigo-500/25"
@@ -1312,7 +1312,7 @@ export default function SubjectChapterView({
                       <button 
                         onClick={() => {
                           const fileName = pdf.pdfFileName || pdf.pdfTitle || `Chapter_Note_${idx + 1}.pdf`;
-                          const currentUrl = pdf.pdfUrl || 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+                          const currentUrl = pdf.pdfUrl || (pdf._pdfUrl_indexedDbKey ? '' : 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
                           downloadPdfFile(currentUrl, pdf._pdfUrl_indexedDbKey, fileName);
                         }}
                         className="px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer"
