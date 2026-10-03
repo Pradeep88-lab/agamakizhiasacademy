@@ -78,4 +78,4 @@ jobs:
           name: Agamakizh-Android-AAB
           path: build/app/outputs/bundle/release/app-release.aab
           if-no-files-found: error
-```
+
