@@ -7,6 +7,7 @@ import railwayLogo from '../../assets/railway-logo.png';
 import quizIcon from '../../assets/quiz-icon.jpg';
 import testIcon from '../../assets/test-icon.jpg';
 import {
+  Menu,
   LayoutDashboard,
   BookOpen,
   GraduationCap,
@@ -121,6 +122,7 @@ const subjects = [
 ];
 
 export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [language, setLanguage] = useState<'english' | 'tamil'>(() => {
     return (localStorage.getItem('agamakizh_study_medium') as 'english' | 'tamil') || 'english';
   });
@@ -1105,9 +1107,26 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   }
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6]">
+    <div className="flex h-screen bg-[#F3F4F6] relative overflow-hidden">
+      <AnimatePresence>
+        {showMobileMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowMobileMenu(false)}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
       {/* Sidebar */}
-      <aside className="w-64 bg-[#2b274e] border-r border-[#2b274e] hidden lg:flex flex-col">
+      <aside className={`w-72 sm:w-64 bg-[#2b274e] border-r border-[#2b274e] flex flex-col absolute lg:static inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out ${showMobileMenu ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <button 
+          onClick={() => setShowMobileMenu(false)}
+          className="lg:hidden absolute right-4 top-6 text-white/50 hover:text-white"
+        >
+          <X className="h-6 w-6" />
+        </button>
         <div className="p-6">
           <div className="flex items-center gap-2.5 mb-8">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-slate-100">
@@ -1223,6 +1242,12 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 shrink-0">
           <div className="flex items-center gap-4 flex-1">
             <div className="lg:hidden flex items-center gap-2">
+              <button 
+                onClick={() => setShowMobileMenu(true)}
+                className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors cursor-pointer"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
               <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-100 shrink-0 shadow-sm">
                 <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
               </div>
