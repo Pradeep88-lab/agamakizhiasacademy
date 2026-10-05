@@ -32,14 +32,22 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Sync Capacitor (if using Capacitor)
-        run: npx cap sync android || true
+      - name: Prepare Android Project
+        run: |
+          if [ -f "capacitor.config.json" ] || [ -f "capacitor.config.ts" ]; then
+            if [ ! -d "android" ]; then
+              npx cap add android || true
+            fi
+            npx cap sync android || true
+          fi
 
       - name: Make Gradle executable
-        run: chmod +x android/gradlew || chmod +x gradlew
+        run: |
+          if [ -f "android/gradlew" ]; then
+            chmod +x android/gradlew
+          elif [ -f "gradlew" ]; then
+            chmod +x gradlew
+          fi
 
       - name: Build Debug APK with Gradle
         run: |
