@@ -1,4 +1,5 @@
-name: Build Android AAB
+```yaml
+name: Build Android App
 
 on:
   push:
@@ -8,192 +9,50 @@ on:
 
 jobs:
   build-android:
-    name: Build Signed Android AAB
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
-
-      # 1. Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Java
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "21"
-
-      # 3. Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: "npm"
 
-      # 4. Install dependencies
-      - name: Install npm dependencies
+      - name: Install dependencies
         run: npm ci
 
-      # 5. Build React/Vite website
       - name: Build web app
         run: npm run build
 
-      # 6. Install Android platform if it is not committed
-      - name: Add Capacitor Android
-        run: npx cap add android
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
-      # 7. Copy web files into Android
-      - name: Capacitor sync
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Capacitor Android
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+
+      - name: Sync Capacitor
         run: npx cap sync android
 
-      # 8. Create signing keystore
-      - name: Create signing keystore
-        working-directory: ./android
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
+      - name: Build Android Debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
 
-          if [ ! -f upload-keystore.jks ]; then
-            echo "ERROR: upload-keystore.jks was not created"
-            exit 1
-          fi
-
-          echo "Keystore created successfully"
-
-      # 9. Create key.properties
-      - name: Create key.properties
-        working-directory: ./android
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          cat > key.properties <<EOF
-          storePassword=$KEYSTORE_PASSWORD
-          keyPassword=$KEY_PASSWORD
-          keyAlias=$KEY_ALIAS
-          storeFile=upload-keystore.jks
-          EOF
-
-      # 10. Configure Android signing
-      - name: Configure release signing
-        working-directory: ./android
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          gradle_file = Path("app/build.gradle")
-          gradle_kts_file = Path("app/build.gradle.kts")
-
-          if gradle_file.exists():
-              print("Using build.gradle")
-              text = gradle_file.read_text()
-
-              signing_code = r'''
-          def keystoreProperties = new Properties()
-          def keystorePropertiesFile = rootProject.file("key.properties")
-
-          if (keystorePropertiesFile.exists()) {
-              keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-          }
-
-          android {
-          '''
-
-              if "keystoreProperties" not in text:
-                  text = text.replace(
-                      "android {",
-                      signing_code,
-                      1
-                  )
-
-                  text = text.replace(
-                      "buildTypes {",
-                      '''signingConfigs {
-                  release {
-                      keyAlias keystoreProperties['keyAlias']
-                      keyPassword keystoreProperties['keyPassword']
-                      storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-                      storePassword keystoreProperties['storePassword']
-                  }
-              }
-
-              buildTypes {''',
-                      1
-                  )
-
-                  text = text.replace(
-                      "release {",
-                      '''release {
-                      signingConfig signingConfigs.release''',
-                      1
-                  )
-
-                  gradle_file.write_text(text)
-
-          elif gradle_kts_file.exists():
-              print("Using build.gradle.kts")
-              print("Kotlin DSL detected.")
-              print("Manual signing configuration may be required.")
-
-          else:
-              print("ERROR: No Android Gradle build file found")
-              raise SystemExit(1)
-          PY
-
-      # 11. Build signed AAB
-      - name: Build release AAB
-        working-directory: ./android
-        run: |
-          chmod +x gradlew
-          ./gradlew bundleRelease
-
-      # 12. Check AAB
-      - name: Check AAB
-        run: |
-          find android/app/build/outputs/bundle -type f -name "*.aab" -print
-
-          if [ ! -f android/app/build/outputs/bundle/release/app-release.aab ]; then
-            echo "ERROR: app-release.aab was not created"
-            exit 1
-          fi
-
-          echo "AAB created successfully"
-
-      # 13. Verify signature
-      - name: Verify AAB signature
-        run: |
-          jarsigner \
-            -verify \
-            -verbose \
-            -certs \
-            android/app/build/outputs/bundle/release/app-release.aab
-
-          echo "AAB signature verified successfully"
-
-      # 14. Prepare artifact
-      - name: Prepare AAB
-        run: |
-          mkdir -p release
-
-          cp android/app/build/outputs/bundle/release/app-release.aab \
-             release/Agamakizh-release.aab
-
-          ls -lh release/Agamakizh-release.aab
-
-      # 15. Upload artifact
-      - name: Upload AAB
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Agamakizh-Android-AAB
-          path: release/Agamakizh-release.aab
-          if-no-files-found: error
-
-      # 16. Clean signing files
-      - name: Clean signing files
-        if: always()
-        run: |
-          rm -f android/upload-keystore.jks
-          rm -f android/key.properties
+          name: Agamakizh-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+```
