@@ -21,7 +21,7 @@ jobs:
           node-version: "22"
           cache: npm
 
-              - name: Install dependencies & Build Web
+ - name: Install dependencies & Build Web
         run: |
           npm install --legacy-peer-deps
           npm run build --if-presentt
