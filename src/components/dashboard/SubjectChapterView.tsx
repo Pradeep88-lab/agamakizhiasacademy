@@ -56,7 +56,7 @@ const chaptersRegistry: Record<string, Array<{
   descriptionTa: string;
 }>> = {
   physics: [
-    { number: 1, titleEn: 'Units, Measurements & Standards of Motion', titleTa: 'அளவீடுகள், அலகுகள் மற்றும் இயக்கவியல்', duration: '45 mins', topicsCount: 6, descriptionEn: 'SI Units, Scalars & Vectors, Newton\'s Three Laws of Motion, Friction and Circular Motion.', descriptionTa: 'SI அலகுகள், திசையிலிகள் மற்றும் திசையன்கள், நியூட்டனின் மூன்று இயக்க விதிகள், உராய்வு மற்றும் வட்ட இயக்கம்.' },
+    { number: 1, titleEn: 'Nature of Universe & Measurement of Quantities', titleTa: 'பிரபஞ்சத்தின் இயல்பு மற்றும் இயற்பியல் அளவுகளின் அளவீடு', duration: '45 mins', topicsCount: 6, descriptionEn: 'Origin Theories & Galaxies, Solar System, General scientific laws in motion, SI Units, and force, pressure and energy.', descriptionTa: 'அண்டத்தின் தோற்றம், விண்மீன் திரள்கள், சூரிய குடும்பம், இயக்கவியல் பொது அறிவியல் விதிகள், SI அலகுகள் மற்றும் விசை, அழுத்தம், ஆற்றல்.' },
     { number: 2, titleEn: 'Work, Power, Energy & Friction', titleTa: 'வேலை, ஆற்றல், திறன் மற்றும் உராய்வு', duration: '50 mins', topicsCount: 5, descriptionEn: 'Work-energy theorem, conservation of kinetic & potential energy, power output.', descriptionTa: 'வேலை-ஆற்றல் தேற்றம், இயக்க மற்றும் நிலையாற்றல் பாதுகாப்பு விதிகள்.' },
     { number: 3, titleEn: 'Gravitation & Planetary Laws', titleTa: 'புவியீர்ப்பு மற்றும் கிரக இயக்க விதிகள்', duration: '40 mins', topicsCount: 4, descriptionEn: 'Newton\'s law of gravitation, Kepler\'s laws, escape velocity, and satellite motion.', descriptionTa: 'நியூட்டனின் ஈர்ப்பு விதி, கெப்ளரின் விதிகள் மற்றும் செயற்கைக்கோள் இயக்கம்.' },
     { number: 4, titleEn: 'Mechanics of Fluids & Surface Tension', titleTa: 'பாய்மங்களின் இயக்கவியல் மற்றும் பரப்பு இழுவிசை', duration: '45 mins', topicsCount: 5, descriptionEn: 'Pascal\'s law, Archimedes principle, buoyancy, viscosity, Bernoulli theorem.', descriptionTa: 'பாஸ்கல் விதி, ஆர்க்கிமிடிஸ் தத்துவம், மிதத்தல் விதிகள், பெர்னௌலி தேற்றம்.' },
@@ -192,18 +192,20 @@ const chapterOneContents: Record<string, {
         descTa: 'புவியீர்ப்பு விதி, பாஸ்கல் மற்றும் ஆர்க்கிமிடிஸ் பாய்ம அழுத்த விதிகள், வேலை-ஆற்றல் தேற்றம் மற்றும் ஆற்றல் மாறாக் கோட்பாடு.'
       }
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY73_5Vq-uU',
-    videoTitle: 'TNPSC GROUP-1 PRELIMS UNIT-1 PHYSICS - 1 NATURE OF UNIVERSE',
+    videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
+    videoTitle: 'MISSION 100 | Group -1 Prelims | Day - 2 | PHYSICS - 1 | Nature of Universe | Mr. Vijaya kumar',
     pdfs: [
       {
         pdfTitle: '1. NATURE OF UNIVERSE.pdf',
+        pdfFileName: '1. NATURE OF UNIVERSE.pdf',
         pdfSize: '2.37 MB',
-        pdfUrl: ''
+        pdfUrl: './pdfs/1. NATURE OF UNIVERSE.pdf'
       },
       {
         pdfTitle: 'PHYSICS FULL NOTES.pdf',
+        pdfFileName: 'PHYSICS FULL NOTES.pdf',
         pdfSize: '27.69 MB',
-        pdfUrl: ''
+        pdfUrl: './pdfs/PHYSICS FULL NOTES.pdf'
       }
     ],
     quiz: [
@@ -753,7 +755,7 @@ export default function SubjectChapterView({
       { title: `2. High-Yield Exam Trends`, desc: `Past year question paper patterns and high-probability topics for upcoming exams.` },
       { title: `3. Revision Summary & Formulae`, desc: `Quick review points and key takeaways for rapid revision.` }
     ],
-    videoUrl: 'https://www.youtube.com/watch?v=kY73_5Vq-uU',
+    videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
     videoTitle: `${subject.name} - Chapter ${currentChapter} Video Class`,
     pdfTitle: `${subject.name}_Chapter${currentChapter}_Notes.pdf`,
     pdfUrl: '',
