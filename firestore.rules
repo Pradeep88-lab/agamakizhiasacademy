@@ -34,5 +34,11 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
+    
+    // Chapter Learning Modules (Videos, Notes, PDFs)
+    match /chapterModules/{id} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }
