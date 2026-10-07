@@ -27,7 +27,7 @@ export function formatVideoEmbed(url?: string | null): VideoInfo {
 
   if (!url || typeof url !== 'string' || !url.trim()) {
     return {
-      embedUrl: `https://www.youtube-nocookie.com/embed/${defaultId}?rel=0&enablejsapi=1`,
+      embedUrl: `https://www.youtube.com/embed/${defaultId}?rel=0&enablejsapi=1`,
       directWatchUrl: `https://www.youtube.com/watch?v=${defaultId}`,
       isYouTube: true,
       videoId: defaultId
@@ -39,7 +39,7 @@ export function formatVideoEmbed(url?: string | null): VideoInfo {
 
   if (ytId) {
     return {
-      embedUrl: `https://www.youtube-nocookie.com/embed/${ytId}?rel=0&enablejsapi=1`,
+      embedUrl: `https://www.youtube.com/embed/${ytId}?rel=0&enablejsapi=1`,
       directWatchUrl: `https://www.youtube.com/watch?v=${ytId}`,
       isYouTube: true,
       videoId: ytId
