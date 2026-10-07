@@ -25,7 +25,9 @@ import {
   Download
 } from 'lucide-react';
 import { formatVideoEmbed } from '../../lib/videoUtils';
-import { getBlob, openPdfPreview, downloadPdfFile } from '../../lib/storage';
+import { getBlob, openPdfPreview, downloadPdfFile, safeLocalStorageSet } from '../../lib/storage';
+import { db } from '../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 export interface SubjectItem {
   id: string;
@@ -84,7 +86,7 @@ const chaptersRegistry: Record<string, Array<{
     { number: 12, titleEn: 'Emergency Provisions & Center-State Relations', titleTa: 'நெருக்கடி நிலை மற்றும் மத்திய-மாநில உறவுகள்', duration: '50 mins', topicsCount: 5, descriptionEn: 'National, State & Financial Emergencies (Arts 352, 356, 360), Sarkaria & Punchhi Commissions.', descriptionTa: 'தேசிய, மாநில மற்றும் நிதி அவசரநிலைகள், சர்க்காரியா ஆணையம்.' }
   ],
   history: [
-    { number: 1, titleEn: 'Advent of Europeans & British Conquest', titleTa: 'ஐரோப்பியர்களின் வருகை மற்றும் பிரிட்டிஷ் ஆதிக்கம்', duration: '50 mins', topicsCount: 6, descriptionEn: 'Portuguese, Dutch, British East India Company, Carnatic Wars, Battle of Plassey and Buxar.', descriptionTa: 'போர்ச்சுகீசியர், டச்சு, பிரிட்டிஷ் கிழக்கிந்திய கம்பெனி, கர்நாடகப் போர்கள், பிளாசிப் போர்.' },
+    { number: 1, titleEn: 'Indus Valley Civilization', titleTa: 'சிந்துவெளி நாகரிகம்', duration: '50 mins', topicsCount: 6, descriptionEn: 'Town planning, Harappa & Mohenjo-daro, Great Bath, Granary, trade, seals, script and decline.', descriptionTa: 'நகர திட்டமிடல், ஹரப்பா மற்றும் மொகஞ்சதாரோ, பெருங்குளம், தானியக்களஞ்சியம், வணிகம், முத்திரைகள் மற்றும் வீழ்ச்சி.' },
     { number: 2, titleEn: 'Early Uprisings & The Great Revolt of 1857', titleTa: 'ஆரம்பகால கிளர்ச்சிகள் மற்றும் 1857 பெரும் புரட்சி', duration: '55 mins', topicsCount: 6, descriptionEn: 'Vellore Mutiny 1806, causes and centers of 1857 revolt, Queen Victoria\'s Proclamation 1858.', descriptionTa: 'வேலூர் புரட்சி 1806, 1857 பெரும் புரட்சியின் காரணங்கள் மற்றும் விக்டோரியா மகாராணி அறிக்கை.' },
     { number: 3, titleEn: 'Socio-Religious Reform Movements', titleTa: 'சமூக-சமய சீர்திருத்த இயக்கங்கள்', duration: '45 mins', topicsCount: 5, descriptionEn: 'Brahmo Samaj, Arya Samaj, Ramakrishna Mission, Aligarh movement, Jyotirao Phule.', descriptionTa: 'பிரம்ம சமாஜம், ஆரிய சமாஜம், ராமகிருஷ்ண மடம், அலிகார் இயக்கம், ஜோதிராவ் பூலே.' },
     { number: 4, titleEn: 'Rise of Indian Nationalism & Early Phase (1885-1905)', titleTa: 'இந்திய தேசிய எழுச்சி மற்றும் ஆரம்ப கட்டம்', duration: '40 mins', topicsCount: 5, descriptionEn: 'Formation of INC, Moderate leaders (Dadabhai Naoroji, Gokhale), Drain of Wealth theory.', descriptionTa: 'காங்கிரஸ் உருவாக்கம், மிதவாதிகள், செல்வச் சுரண்டல் கோட்பாடு.' },
@@ -267,7 +269,7 @@ const chapterOneContents: Record<string, {
       { title: '5. Formation of Constituent Assembly (1946)', desc: 'Constituted under the Cabinet Mission Plan. First meeting held on 9 Dec 1946 with Dr. Sachchidananda Sinha as temporary president. Dr. Rajendra Prasad was elected permanent President on 11 Dec 1946.' },
       { title: '6. Drafting Committee & Adoption', desc: 'Drafting Committee setup on 29 August 1947 with Dr. B.R. Ambedkar as Chairman (7 members). The Constitution was adopted on 26 November 1949 and enacted on 26 January 1950 (Republic Day).' }
     ],
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
     videoTitle: 'Complete Indian Polity Chapter 1: Making of the Constitution & Historic Acts',
     pdfTitle: 'Agamakizh_Indian_Polity_Chapter1_Notes.pdf',
     quiz: [
@@ -304,49 +306,37 @@ const chapterOneContents: Record<string, {
     ]
   },
   history: {
-    summaryEn: `Modern Indian History Chapter 1 details the arrival of European mercantile powers (Portuguese, Dutch, British, Danes, and French) in India, the strategic struggles for supremacy, the Carnatic Wars in South India, and the pivotal Battle of Plassey (1757) and Battle of Buxar (1764) that laid the foundation of British territorial dominion.`,
-    summaryTa: `நவீன இந்திய வரலாறு அத்தியாயம் 1: 1498-ல் வாஸ்கோடகாமா வருகை முதல் ஐரோப்பிய வணிக நிறுவனங்களின் ஆதிக்கம், தென்னிந்தியாவில் நடைபெற்ற கர்நாடகப் போர்கள் மற்றும் 1757 பிளாசிப் போர், 1764 பக்சார் போர்கள் மூலம் பிரிட்டிஷ் கிழக்கிந்திய நிறுவனம் இந்தியாவில் காலூன்றிய வரலாற்றை விளக்குகிறது.`,
+    summaryEn: `Indus Valley Civilization (Bronze Age) details the urban planning, major sites like Harappa and Mohenjo-daro, Great Bath, granaries, agriculture, craft production, trade relations with Mesopotamia, script, and factors leading to the decline of the civilization.`,
+    summaryTa: `சிந்துவெளி நாகரிகம் (வெண்கலக் காலம்): ஹரப்பா மற்றும் மொகஞ்சதாரோ நகர கட்டமைப்பு, பெருங்குளம், தானியக்களஞ்சியம், விவசாயம், கைவினைப் பொருட்கள், மெசபடோமியா வர்த்தகம், எழுத்து முறை மற்றும் வீழ்ச்சிக்கான காரணங்களை விரிவாக விளக்குகிறது.`,
     keyPoints: [
-      { title: '1. Portuguese Arrival (1498)', desc: 'Vasco da Gama reached Calicut in May 1498 and was welcomed by Zamorin. Francisco de Almeida introduced the Blue Water Policy; Alfonso de Albuquerque captured Goa in 1510.' },
-      { title: '2. English East India Company (1600)', desc: 'Formed via royal charter by Queen Elizabeth I on 31 Dec 1600. Captain William Hawkins (1608) and Sir Thomas Roe (1615) visited Mughal Emperor Jahangir\'s court to secure trading rights.' },
-      { title: '3. Fort St. George in Madras (1639)', desc: 'Francis Day obtained the lease of Madras from Chennappa Nayakar in 1639 and constructed Fort St. George, which became the headquarters of the Coromandel coast.' },
-      { title: '4. The Carnatic Wars (1746 - 1763)', desc: 'Fought primarily in the Tamil Nadu region between the French (Dupleix) and the British (Robert Clive). The Treaty of Paris (1763) ended French political ambitions in India.' },
-      { title: '5. Battle of Plassey (23 June 1757)', desc: 'Robert Clive defeated Siraj-ud-Daulah, the Nawab of Bengal, through the treachery of Mir Jafar. Marked the turning point from trading company to territorial master.' },
-      { title: '6. Battle of Buxar (22 October 1764)', desc: 'Hector Munro defeated the joint forces of Mir Qasim (Bengal), Shuja-ud-Daulah (Awadh), and Mughal Emperor Shah Alam II. Led to the Treaty of Allahabad (1765) granting Diwani rights.' }
+      { title: '1. Discovery & Urban Planning (1921-22)', desc: 'Excavated by Daya Ram Sahni (Harappa, 1921) and R. D. Banerjee (Mohenjo-daro, 1922) under Sir John Marshall. Renowned for grid system layout, baked brick houses, and sophisticated underground drainage.' },
+      { title: '2. The Great Bath & Granaries', desc: 'The Great Bath at Mohenjo-daro lined with bitumen for ritual bathing. Large granaries discovered at Harappa and Mohenjo-daro for food surplus storage.' },
+      { title: '3. Agriculture & Animal Domestication', desc: 'Cultivated wheat, barley, sesamum, and cotton (first to produce cotton in the world). Domesticated humped bulls, cattle, sheep, and goats; no conclusive evidence of horses.' },
+      { title: '4. Craft, Seals & Metallurgy (Bronze Age)', desc: 'Steatite seals with unicorn and Pashupati Shiva motif. Bronze Dancing Girl statue, bearded priest stone bust, and bead-making factories at Chanhudaro and Lothal.' },
+      { title: '5. Trade, Dockyard & Weights', desc: 'Lothal in Gujarat served as the world\'s earliest known artificial tidal dockyard. Trade contacts with Dilmun (Bahrain), Magan (Oman), and Meluhha (Indus) recorded in Mesopotamian texts.' },
+      { title: '6. Script & Decline of Civilization', desc: 'Boustrophedon pictographic script (still undeciphered). Decline around 1900 BCE attributed to climate change, shifting of river courses (Ghaggar-Hakra), Aryan invasion (Wheeler\'s theory), or floods.' }
     ],
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    videoTitle: 'Modern History Chapter 1: Advent of Europeans & British Dominance (TNPSC / UPSC Masterclass)',
-    pdfTitle: 'Agamakizh_Modern_History_Chapter1_Notes.pdf',
+    videoUrl: 'https://www.youtube.com/watch?v=W4PYzrYdYEw',
+    videoTitle: "MISSION I'MPOSSIBLE | Day 38 | History | Indus Valley Civilization | Mr. S.P. Velan",
+    pdfTitle: 'Agamakizh_Indus_Valley_Civilization_Notes.pdf',
     quiz: [
       {
-        question: 'Who was the Portuguese governor who introduced the famous "Blue Water Policy"?',
-        options: ['Alfonso de Albuquerque', 'Francisco de Almeida', 'Nuno da Cunha', 'Vasco da Gama'],
+        question: 'Which Indus Valley site is famous for the world\'s earliest tidal dockyard and maritime port?',
+        options: ['Kalibangan', 'Lothal', 'Banawali', 'Dholavira'],
         correct: 1,
-        explanation: 'Francisco de Almeida (first Viceroy of Portuguese India) initiated the Blue Water Policy (Cartaz system) to control maritime trade.'
+        explanation: 'Lothal in Gujarat, located on the banks of the Bhogava river, was a major port and dockyard of the Harappan civilization.'
       },
       {
-        question: 'In which year did the British East India Company establish Fort St. George in Madras?',
-        options: ['1600', '1639', '1668', '1700'],
+        question: 'Who was the Director General of the Archaeological Survey of India when Harappa and Mohenjo-daro were officially excavated in 1921-24?',
+        options: ['Sir Alexander Cunningham', 'Sir John Marshall', 'Sir Mortimer Wheeler', 'James Prinsep'],
         correct: 1,
-        explanation: 'In 1639, Francis Day obtained land from the Raja of Chandragiri and built Fort St. George in Madras.'
+        explanation: 'Sir John Marshall announced the discovery of the Indus Valley Civilization to the world in 1924.'
       },
       {
-        question: 'The decisive Battle of Plassey was fought on which historic date?',
-        options: ['23 June 1757', '22 October 1764', '14 January 1761', '10 May 1857'],
-        correct: 0,
-        explanation: 'The Battle of Plassey took place on 23 June 1757 between Robert Clive and Siraj-ud-Daulah.'
-      },
-      {
-        question: 'By which treaty did the British East India Company acquire the Diwani (revenue collecting) rights over Bengal, Bihar, and Orissa?',
-        options: ['Treaty of Madras', 'Treaty of Paris', 'Treaty of Allahabad (1765)', 'Treaty of Purandar'],
-        correct: 2,
-        explanation: 'Following the victory at Buxar, Robert Clive signed the Treaty of Allahabad in August 1765 with Mughal Emperor Shah Alam II.'
-      },
-      {
-        question: 'Which French Governor-General clashed fiercely with Robert Clive in the Carnatic Wars?',
-        options: ['Dupleix', 'Count de Lally', 'Bussy', 'Colbert'],
-        correct: 0,
-        explanation: 'Joseph François Dupleix was the ambitious French Governor-General whose genius challenged British ascendancy in South India.'
+        question: 'The famous "Dancing Girl" bronze figurine was excavated from which Indus Valley site?',
+        options: ['Harappa', 'Mohenjo-daro', 'Chanhudaro', 'Rakhigarhi'],
+        correct: 1,
+        explanation: 'The famous bronze statue of the Dancing Girl, made using the lost-wax technique (cire perdue), was discovered at Mohenjo-daro.'
       }
     ]
   },
@@ -385,7 +375,7 @@ const chapterOneContents: Record<string, {
         descTa: 'முதல் n இயல் எண்களின் கூடுதல் = n(n+1)/2; முதல் n ஒற்றைப்படை எண்களின் கூடுதல் = n²; வர்க்கங்களின் கூடுதல் = n(n+1)(2n+1)/6; கனங்களின் கூடுதல் = [n(n+1)/2]².'
       }
     ],
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=W4PYzrYdYEw',
     videoTitle: 'TNPSC & SSC Maths Chapter 1: Simplification, BODMAS & Number System Shortcuts',
     pdfTitle: 'Agamakizh_Maths_Chapter1_Simplification_Formulas.pdf',
     quiz: [
@@ -471,7 +461,7 @@ const chapterOneContents: Record<string, {
         descTa: 'இரண்டு அல்லது அதற்கு மேற்பட்ட வாக்கியங்களில் உள்ள பொதுவான சொற்களை ஒப்பிட்டு, தனித்தனி குறியீடுகளைக் கண்டறியும் முறை.'
       }
     ],
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
     videoTitle: 'Reasoning Chapter 1: Coding-Decoding Mastery & Speed Tricks for TNPSC / SSC / RRB',
     pdfTitle: 'Agamakizh_Reasoning_Chapter1_Coding_Decoding.pdf',
     quiz: [
@@ -688,6 +678,34 @@ export default function SubjectChapterView({
       window.removeEventListener('storage', handleSync);
       window.removeEventListener('agamakizh_chapter_updated', handleSync);
       if (bc) bc.close();
+    };
+  }, []);
+
+  // Cloud Sync: Realtime sync with Firestore so Admin Panel updates on website immediately appear on mobile app
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+    try {
+      const q = collection(db, 'chapterModules');
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const remoteData: Record<string, any> = {};
+        snapshot.forEach((d) => {
+          remoteData[d.id] = d.data();
+        });
+        if (Object.keys(remoteData).length > 0) {
+          setCustomModules((prev) => {
+            const merged = { ...prev, ...remoteData };
+            safeLocalStorageSet('agamakizh_chapter_modules', merged);
+            return merged;
+          });
+        }
+      }, (err) => {
+        console.warn('Realtime chapterModules sync error:', err);
+      });
+    } catch (err) {
+      console.warn('Firestore setup error:', err);
+    }
+    return () => {
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 
