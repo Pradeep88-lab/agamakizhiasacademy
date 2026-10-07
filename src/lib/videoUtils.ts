@@ -23,7 +23,7 @@ export interface VideoInfo {
 }
 
 export function formatVideoEmbed(url?: string | null): VideoInfo {
-  const defaultId = 'kY73_5Vq-uU'; // High-yield physics lecture: Measurement & Units
+  const defaultId = 'zEaBIuPyL0w'; // High-yield physics lecture: Mission 100 Nature of Universe
 
   if (!url || typeof url !== 'string' || !url.trim()) {
     return {
