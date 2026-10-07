@@ -129,13 +129,13 @@ export function dataUrlToBlob(dataUrl: string): Blob {
 
 export async function getResolvedPdfUrl(pdfUrl?: string, indexedDbKey?: string): Promise<{ url: string; isBlobUrl: boolean } | null> {
   let source = pdfUrl;
-  if ((!source || source.length < 50) && indexedDbKey) {
+  if ((!source || source === 'local-indexeddb-blob') && indexedDbKey) {
     const fromIdb = await getBlob(indexedDbKey);
     if (fromIdb) {
       source = fromIdb;
     }
   }
-  if (!source) return null;
+  if (!source || source === 'local-indexeddb-blob') return null;
 
   if (source.startsWith('data:')) {
     try {
