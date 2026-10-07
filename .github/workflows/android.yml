@@ -1,37 +1,30 @@
 name: Build Android App
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build-android-debug:
     name: Build Debug APK
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-
       - name: Install dependencies & Build Web
         run: |
           npm install --legacy-peer-deps
           npm run build --if-present
-
       - name: Set up Java JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '21'
-
       - name: Prepare Android Project
         run: |
           if [ -f "capacitor.config.json" ] || [ -f "capacitor.config.ts" ]; then
@@ -40,26 +33,3 @@ jobs:
             fi
             npx cap sync android || true
           fi
-
-      - name: Make Gradle executable
-        run: |
-          if [ -f "android/gradlew" ]; then
-            chmod +x android/gradlew
-          elif [ -f "gradlew" ]; then
-            chmod +x gradlew
-          fi
-
-      - name: Build Debug APK with Gradle
-        run: |
-          if [ -d "android" ]; then
-            cd android && ./gradlew assembleDebug
-          else
-            ./gradlew assembleDebug
-          fi
-
-      - name: Upload APK as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: '**/build/outputs/apk/debug/*.apk'
-          retention-days: 14
