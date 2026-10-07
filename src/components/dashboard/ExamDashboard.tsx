@@ -67,7 +67,10 @@ import {
   ListFilter,
   Play,
   Flame,
-  CheckCheck
+  CheckCheck,
+  Home,
+  Store,
+  Dumbbell
 } from 'lucide-react';
 
 import { db } from '../../lib/firebase';
@@ -1377,7 +1380,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
         </header>
 
         {/* Viewport */}
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 pb-24 lg:pb-8">
           <div className="max-w-6xl mx-auto">
             {currentView === 'dashboard' ? (
               !selectedExam ? (
@@ -3718,6 +3721,30 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Mobile Bottom Navigation Menu */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50 flex items-center justify-around px-2 py-2 safe-area-bottom">
+        <button onClick={handleDashboardClick} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'dashboard' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
+          <Home className="h-5 w-5 mb-1" />
+          <span className={`text-[10px] ${currentView === 'dashboard' ? 'font-bold' : 'font-medium'}`}>Home</span>
+        </button>
+        <button onClick={handleCalendarClick} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'calendar' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
+          <GraduationCap className="h-5 w-5 mb-1" />
+          <span className={`text-[10px] ${currentView === 'calendar' ? 'font-bold' : 'font-medium'}`}>Learn</span>
+        </button>
+        <button onClick={handleQuizClick} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'quiz' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
+          <Dumbbell className="h-5 w-5 mb-1" />
+          <span className={`text-[10px] ${currentView === 'quiz' ? 'font-bold' : 'font-medium'}`}>Practice</span>
+        </button>
+        <button className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-700 cursor-pointer transition-colors">
+          <Store className="h-5 w-5 mb-1" />
+          <span className="text-[10px] font-medium">Store</span>
+        </button>
+        <button onClick={handleSettingsClick} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'settings' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
+          <User className="h-5 w-5 mb-1" />
+          <span className={`text-[10px] ${currentView === 'settings' ? 'font-bold' : 'font-medium'}`}>Profile</span>
+        </button>
+      </nav>
     </div>
   );
 }
