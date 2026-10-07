@@ -1319,7 +1319,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                 {userProfile.avatar ? (
                   <img src={userProfile.avatar} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  userProfile.name.split(' ').map(n => n[0]).join('')
+                  userProfile.name.split(' ').map((n: string) => n[0]).join('')
                 )}
               </button>
 
