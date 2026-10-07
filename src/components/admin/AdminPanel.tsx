@@ -54,8 +54,9 @@ import { initialFullMockQuizzes } from '../../lib/quizData';
 import { downloadAdminResultsMasterPdf, downloadSingleResultPdf, download2026CalendarPlanPdf } from '../../lib/pdfReportGenerator';
 import { initial2026CalendarPlan, CalendarPlanItem, PlanType } from '../../lib/calendarPlan2026Data';
 import logoImage from '../../assets/images/regenerated_image_1790577966199.jpg';
+import AdminStorePanel from './AdminStorePanel';
 
-export type AdminTab = 'chapters' | 'syllabus' | 'questions' | 'results' | 'notifications';
+export type AdminTab = 'chapters' | 'syllabus' | 'questions' | 'results' | 'notifications' | 'store';
 
 // Helper to convert any video URL to embed format
 function getYouTubeEmbedUrl(url: string): string | null {
@@ -1424,6 +1425,13 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               badge={`${notifications.length}`}
               onClick={() => { setActiveTab('notifications'); setSearchTerm(''); }}
             />
+            <AdminSidebarLink
+              icon={<BookOpen className="h-4 w-4 text-orange-400" />}
+              label="Store Books Manager"
+              active={activeTab === 'store'}
+              badge="New"
+              onClick={() => { setActiveTab('store'); setSearchTerm(''); }}
+            />
           </nav>
         </div>
 
@@ -1509,6 +1517,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               {activeTab === 'questions' && <><HelpCircle className="h-5 w-5 text-emerald-600" /> Question Tests & Assessment Builder</>}
               {activeTab === 'results' && <><Award className="h-5 w-5 text-amber-500" /> Student Results & Marks Management</>}
               {activeTab === 'notifications' && <><Calendar className="h-5 w-5 text-purple-600" /> Calendar & Plans 2026 Management</>}
+              {activeTab === 'store' && <><BookOpen className="h-5 w-5 text-orange-500" /> Store Books Management</>}
             </h2>
           </div>
 
@@ -3746,6 +3755,13 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
           </div>
         </div>
+        
+        {/* TAB 7: STORE BOOKS MANAGEMENT */}
+        {activeTab === 'store' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <AdminStorePanel />
+          </div>
+        )}
       </main>
 
       {/* Question Test Interactive Preview Modal */}

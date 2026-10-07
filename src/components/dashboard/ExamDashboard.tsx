@@ -81,6 +81,7 @@ import { initialFullMockQuizzes, MockQuizItem, QuizQuestion, generateQuizQuestio
 import { initialQuestionPapers, QuestionPaperItem } from '../../lib/questionPaperData';
 import { initial2026CalendarPlan, CalendarPlanItem, PlanType, PlanStatus } from '../../lib/calendarPlan2026Data';
 import SubjectChapterView from './SubjectChapterView';
+import StoreView from './StoreView';
 import { downloadStudentMarksPdf, downloadSingleResultPdf, download2026CalendarPlanPdf } from '../../lib/pdfReportGenerator';
 
 const exams = [
@@ -140,7 +141,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [selectedResult, setSelectedResult] = useState<any | null>(null);
   const [selectedAnalysisQuestion, setSelectedAnalysisQuestion] = useState<number | null>(null);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'calendar' | 'quiz' | 'marks' | 'settings'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'calendar' | 'quiz' | 'marks' | 'settings' | 'store'>('dashboard');
   const [userProfile, setUserProfile] = useState(() => {
     try {
       const saved = localStorage.getItem('agamakizh_student_session');
@@ -1165,6 +1166,12 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
               label={language === 'english' ? 'Test Marks' : 'தேர்வு மதிப்பெண்கள்'}
               active={currentView === 'marks'}
               onClick={handleMarksClick}
+            />
+            <SidebarLink
+              icon={<Store className="h-4 w-4" />}
+              label={language === 'english' ? 'Academy Store' : 'புத்தகக் கடை'}
+              active={currentView === 'store'}
+              onClick={() => { setCurrentView('store'); setSelectedExam(null); setActiveMockTest(null); }}
             />
             <SidebarLink
               icon={<Settings className="h-4 w-4" />}
@@ -3312,6 +3319,8 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                   )}
                 </AnimatePresence>
               </motion.div>
+            ) : currentView === 'store' ? (
+              <StoreView language={language} />
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -3736,9 +3745,9 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           <Dumbbell className="h-5 w-5 mb-1" />
           <span className={`text-[10px] ${currentView === 'quiz' ? 'font-bold' : 'font-medium'}`}>Practice</span>
         </button>
-        <button className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-700 cursor-pointer transition-colors">
+        <button onClick={() => { setCurrentView('store'); setShowMobileMenu(false); }} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'store' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
           <Store className="h-5 w-5 mb-1" />
-          <span className="text-[10px] font-medium">Store</span>
+          <span className={`text-[10px] ${currentView === 'store' ? 'font-bold' : 'font-medium'}`}>Store</span>
         </button>
         <button onClick={handleSettingsClick} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'settings' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
           <User className="h-5 w-5 mb-1" />
