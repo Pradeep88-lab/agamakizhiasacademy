@@ -31,24 +31,32 @@ jobs:
         npx cap add ios || true
         npx cap sync ios
 
-    - name: Build Xcode Archive (Unsigned)
+    - name: Build Xcode Project (Unsigned)
       working-directory: ./ios/App
       run: |
-        xcodebuild archive \
-          -workspace App.xcworkspace \
+        if [ -d "App.xcworkspace" ]; then
+          PROJECT_FLAG="-workspace App.xcworkspace"
+        else
+          PROJECT_FLAG="-project App.xcodeproj"
+        fi
+
+        xcodebuild build \
+          $PROJECT_FLAG \
           -scheme App \
           -configuration Release \
+          -sdk iphoneos \
           -destination 'generic/platform=iOS' \
-          -archivePath "$RUNNER_TEMP/App.xcarchive" \
+          -derivedDataPath "$RUNNER_TEMP/DerivedData" \
           CODE_SIGNING_ALLOWED=NO \
           CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGN_ENTITLEMENTS=""
+          CODE_SIGN_IDENTITY=""
 
     - name: Package into IPA
       run: |
+        APP_PATH=$(find "$RUNNER_TEMP/DerivedData/Build/Products" -name "*.app" -type d | head -n 1)
+        echo "Found App bundle at: $APP_PATH"
         mkdir -p "$RUNNER_TEMP/Payload"
-        cp -r "$RUNNER_TEMP/App.xcarchive/Products/Applications/App.app" "$RUNNER_TEMP/Payload/"
+        cp -r "$APP_PATH" "$RUNNER_TEMP/Payload/"
         cd "$RUNNER_TEMP"
         zip -r -q agamakizh-ias-academy-unsigned.ipa Payload
 
