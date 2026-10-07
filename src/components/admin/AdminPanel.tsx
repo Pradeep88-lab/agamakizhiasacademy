@@ -221,8 +221,8 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       examCategory: 'TNPSC Group I',
       subjectId: 'physics',
       chapterNumber: 1,
-      titleEn: 'Units, Measurements & Standards of Motion',
-      titleTa: 'அளவீடுகள், அலகுகள் மற்றும் இயக்கவியல்',
+      titleEn: 'Nature of Universe & Measurement of Quantities',
+      titleTa: 'பிரபஞ்சத்தின் இயல்பு மற்றும் இயற்பியல் அளவுகளின் அளவீடு',
       duration: '45 mins',
       // 1. Study Notes & Key Concepts
       summaryEn: 'Nature of Universe - Measurement of physical quantities - General scientific laws in motion - force, pressure, and energy',
@@ -254,8 +254,8 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
         }
       ],
       // 2. Video Class
-      videoUrl: 'https://www.youtube.com/watch?v=kY73_5Vq-uU',
-      videoTitle: 'Complete Chapter 1: Units, Dimensions & Laws of Motion Masterclass',
+      videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
+      videoTitle: 'MISSION 100 | Group -1 Prelims | Day - 2 | PHYSICS - 1 | Nature of Universe | Mr. Vijaya kumar',
       faculty: 'Dr. S. K. Raman',
       // 3. Practice Test (MCQs - English & Tamil Medium)
       quiz: [
