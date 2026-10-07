@@ -150,7 +150,9 @@ const chapterOneContents: Record<string, {
   keyPoints: Array<{ title: string; desc: string; titleTa?: string; descTa?: string }>;
   videoUrl: string;
   videoTitle: string;
-  pdfTitle: string;
+  pdfTitle?: string;
+  pdfFileName?: string;
+  pdfs?: Array<{ pdfTitle?: string; pdfFileName?: string; pdfSize?: string; pdfUrl?: string; _pdfUrl_indexedDbKey?: string }>;
   quiz: Array<{
     question: string;
     questionTa?: string;
@@ -191,8 +193,19 @@ const chapterOneContents: Record<string, {
       }
     ],
     videoUrl: 'https://www.youtube.com/watch?v=kY73_5Vq-uU',
-    videoTitle: 'Complete Chapter 1: Units, Dimensions & Laws of Motion (Civil Services Masterclass)',
-    pdfTitle: 'Agamakizh_Physics_Chapter1_Comprehensive_Notes.pdf',
+    videoTitle: 'TNPSC GROUP-1 PRELIMS UNIT-1 PHYSICS - 1 NATURE OF UNIVERSE',
+    pdfs: [
+      {
+        pdfTitle: '1. NATURE OF UNIVERSE.pdf',
+        pdfSize: '2.37 MB',
+        pdfUrl: ''
+      },
+      {
+        pdfTitle: 'PHYSICS FULL NOTES.pdf',
+        pdfSize: '27.69 MB',
+        pdfUrl: ''
+      }
+    ],
     quiz: [
       {
         question: 'What is the average distance represented by one Astronomical Unit (AU), commonly used to measure distances within our solar system?',
@@ -1226,7 +1239,7 @@ export default function SubjectChapterView({
 
               <div className="space-y-4">
                 {/* Legacy single PDF support */}
-                {detailedContent?.pdfFileName && (!detailedContent?.pdfs || detailedContent?.pdfs.length === 0) && (
+                {(detailedContent?.pdfFileName || detailedContent?.pdfTitle) && (!detailedContent?.pdfs || detailedContent?.pdfs.length === 0) && (
                   <div className="p-6 bg-indigo-50/40 rounded-2xl border border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0">
                       <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-red-500 border border-slate-200 shadow-xs shrink-0">
