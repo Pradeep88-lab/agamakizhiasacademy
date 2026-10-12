@@ -553,6 +553,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const [testMedium, setTestMedium] = useState<'english' | 'tamil' | 'bilingual'>('bilingual');
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showMobilePalette, setShowMobilePalette] = useState(false);
 
   useEffect(() => {
     if (activeMockTest) {
@@ -771,8 +772,8 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
     return (
       <div className="flex flex-col h-screen bg-white">
         {/* Test Header */}
-        <header className="h-16 border-b border-slate-100 flex items-center justify-between px-6 shrink-0 bg-slate-900 text-white">
-          <div className="flex items-center gap-4">
+        <header className="min-h-14 sm:h-16 border-b border-slate-800 flex items-center justify-between px-3 sm:px-6 shrink-0 bg-slate-900 text-white gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => {
                 if (confirm('Quit test? Your progress will not be saved.')) {
@@ -780,21 +781,21 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                   setCurrentView('quiz');
                 }
               }}
-              className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 transition-colors"
+              className="p-1.5 sm:p-2 hover:bg-slate-800 rounded-lg text-slate-400 transition-colors shrink-0"
               title="Close Test"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
-            <div className="w-px h-6 bg-slate-700 mx-1" />
-            <div>
-              <h1 className="text-sm font-bold leading-tight">{activeMockTest.title}</h1>
-              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">{activeMockTest.category} · {activeMockTest.questions} Qs</p>
+            <div className="w-px h-5 sm:h-6 bg-slate-700 shrink-0" />
+            <div className="min-w-0">
+              <h1 className="text-xs sm:text-sm font-bold leading-tight truncate max-w-[160px] sm:max-w-xs md:max-w-md">{activeMockTest.title}</h1>
+              <p className="text-[9px] sm:text-[10px] text-slate-400 uppercase font-bold tracking-widest truncate">{activeMockTest.category} · {activeMockTest.questions} Qs</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            {/* Bilingual / Language Toggle */}
-            <div className="flex items-center gap-1 p-1 bg-slate-800 rounded-lg border border-slate-700">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            {/* Bilingual / Language Toggle - hidden on small mobile to avoid overflow since Question Card has language toggle */}
+            <div className="hidden md:flex items-center gap-1 p-1 bg-slate-800 rounded-lg border border-slate-700">
               <button
                 type="button"
                 onClick={() => setTestMedium('bilingual')}
@@ -819,27 +820,43 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
               </button>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-lg border border-slate-700 min-w-[100px] justify-center">
-                <Timer className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-mono font-bold tabular-nums">{formatTime(timeLeft)}</span>
-              </div>
-
-              <button
-                onClick={() => setIsPaused(!isPaused)}
-                className={`p-2 rounded-lg transition-colors ${isPaused ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-400'}`}
-                title={isPaused ? "Resume Test" : "Pause Test"}
-              >
-                {isPaused ? <PlayCircle className="h-5 w-5" /> : <PauseCircle className="h-5 w-5" />}
-              </button>
-
-              <button
-                onClick={() => setShowSubmitModal(true)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition-colors shadow-lg shadow-emerald-900/20"
-              >
-                Submit
-              </button>
+            {/* Timer */}
+            <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-slate-800 rounded-lg border border-slate-700 justify-center">
+              <Timer className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-400 shrink-0" />
+              <span className="text-xs sm:text-sm font-mono font-bold tabular-nums">{formatTime(timeLeft)}</span>
             </div>
+
+            {/* Pause button */}
+            <button
+              onClick={() => setIsPaused(!isPaused)}
+              className={`p-1.5 sm:p-2 rounded-lg transition-colors ${isPaused ? 'bg-blue-600 text-white' : 'hover:bg-slate-800 text-slate-400'}`}
+              title={isPaused ? "Resume Test" : "Pause Test"}
+            >
+              {isPaused ? <PlayCircle className="h-4 w-4 sm:h-5 sm:w-5" /> : <PauseCircle className="h-4 w-4 sm:h-5 sm:w-5" />}
+            </button>
+
+            {/* Mobile Palette Drawer Trigger Button */}
+            <button
+              onClick={() => setShowMobilePalette(true)}
+              className="lg:hidden flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors"
+              title="View Question Grid"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>{currentQuestion}/{activeMockTest.qCount}</span>
+            </button>
+
+            {/* Submit */}
+            <button
+              onClick={() => setShowSubmitModal(true)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-colors shadow-lg shadow-emerald-900/20"
+            >
+              Submit
+            </button>
           </div>
         </header>
 
@@ -1058,6 +1075,109 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                         </button>
                       </div>
                     </div>
+
+                    {/* Mobile Bottom Question Palette */}
+                    <div className="mt-8 pt-6 border-t border-slate-200/80 lg:hidden">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Question Palette</span>
+                          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                            {answeredCount}/{activeMockTest.qCount} Attempted
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowMobilePalette(true)}
+                          className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+                        >
+                          Expand View
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {/* Legend pills for mobile */}
+                      <div className="flex flex-wrap gap-2 text-[10px] font-bold text-slate-600 mb-4 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-4 h-4 bg-[#00C897] rounded-sm text-white text-[9px] flex items-center justify-center font-bold">✓</div>
+                          <span>Answered ({Object.keys(answers).length})</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-4 h-4 bg-[#FF5C77] rounded-sm text-white text-[9px] flex items-center justify-center font-bold">!</div>
+                          <span>Not Answered ({Object.keys(visitedQuestions).length - Object.keys(answers).length})</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-4 h-4 bg-[#FFB800] rounded-sm text-white text-[9px] flex items-center justify-center font-bold">★</div>
+                          <span>Review ({Object.keys(markedForReview).filter(k => !answers[Number(k)]).length})</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-4 h-4 bg-white border border-slate-300 rounded-sm text-slate-600 text-[9px] flex items-center justify-center font-bold">•</div>
+                          <span>Not Visited ({activeMockTest.qCount - Object.keys(visitedQuestions).length})</span>
+                        </div>
+                      </div>
+
+                      {/* Horizontal/Scrollable or compact grid */}
+                      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+                        <div className="grid grid-cols-6 sm:grid-cols-10 gap-2.5 max-h-60 overflow-y-auto pr-1">
+                          {Array.from({ length: activeMockTest.qCount }).map((_, i) => {
+                            const qNum = i + 1;
+                            const isCurrent = currentQuestion === qNum;
+                            const isAnswered = answers[qNum] !== undefined;
+                            const isVisited = visitedQuestions[qNum];
+                            const isMarked = markedForReview[qNum];
+
+                            let btnStyle = "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50";
+                            if (isCurrent) {
+                              btnStyle = "bg-[#1A73E8] text-white shadow-md ring-2 ring-blue-400 font-extrabold scale-105 z-10";
+                            } else if (isMarked && isAnswered) {
+                              btnStyle = "bg-slate-600 text-white shadow-xs";
+                            } else if (isMarked) {
+                              btnStyle = "bg-[#FFB800] text-white shadow-xs";
+                            } else if (isAnswered) {
+                              btnStyle = "bg-[#00C897] text-white shadow-xs";
+                            } else if (isVisited) {
+                              btnStyle = "bg-[#FF5C77] text-white shadow-xs";
+                            }
+
+                            return (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => {
+                                  setVisitedQuestions(prev => ({ ...prev, [qNum]: true }));
+                                  setCurrentQuestion(qNum);
+                                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                className={`h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-all relative cursor-pointer ${btnStyle}`}
+                              >
+                                {qNum}
+                                {isMarked && isAnswered && !isCurrent && (
+                                  <span className="w-2 h-2 rounded-full bg-[#00C897] absolute bottom-0.5 right-0.5 border border-white"></span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-slate-100 flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => { setCurrentView('dashboard'); setSelectedExam(null); setActiveMockTest(null); }}
+                            className="flex-1 bg-slate-50 border border-slate-200 text-slate-700 font-bold py-2.5 rounded-lg text-xs hover:bg-slate-100 transition-colors"
+                          >
+                            Exit / Dashboard
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowSubmitModal(true)}
+                            className="flex-1 bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-xs hover:bg-emerald-700 transition-colors shadow-sm"
+                          >
+                            Submit Test
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </>
                 );
               })()}
@@ -1123,8 +1243,160 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
             )}
           </AnimatePresence>
 
-          {/* Question Grid Sidebar - Pentagon Design */}
-          <aside className="w-80 border-l border-slate-100 bg-white flex flex-col overflow-hidden shrink-0">
+          {/* Mobile Bottom-Sheet Drawer for Question Palette */}
+          <AnimatePresence>
+            {showMobilePalette && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end lg:hidden"
+                onClick={() => setShowMobilePalette(false)}
+              >
+                <motion.div
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "100%" }}
+                  transition={{ type: "spring", damping: 25, stiffness: 250 }}
+                  className="bg-white rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Drawer Handle & Header */}
+                  <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
+                        {currentQuestion}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900 leading-tight">Question Palette</h4>
+                        <p className="text-[10px] text-slate-500">{activeMockTest.category || 'General Section'}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowMobilePalette(false)}
+                      className="p-2 hover:bg-slate-200 rounded-full text-slate-500 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Stats Grid inside Drawer */}
+                  <div className="p-3 border-b border-slate-100 text-[10px] font-bold text-slate-700 bg-white">
+                    <div className="grid grid-cols-2 gap-y-3 gap-x-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 bg-[#00C897] text-white flex items-center justify-center rounded-sm font-bold text-[10px]">
+                          {Object.keys(answers).length}
+                        </div>
+                        <span>Answered</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 bg-[#FF5C77] text-white flex items-center justify-center rounded-sm font-bold text-[10px]">
+                          {Object.keys(visitedQuestions).length - Object.keys(answers).length}
+                        </div>
+                        <span>Not Answered</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 bg-[#FFB800] text-white flex items-center justify-center rounded-sm font-bold text-[10px]">
+                          {Object.keys(markedForReview).filter(k => !answers[Number(k)]).length}
+                        </div>
+                        <span>Marked for Review</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 bg-white border border-slate-300 text-slate-600 flex items-center justify-center rounded-sm font-bold text-[10px]">
+                          {activeMockTest.qCount - Object.keys(visitedQuestions).length}
+                        </div>
+                        <span>Not Visited</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Grid of Questions */}
+                  <div className="flex-1 overflow-y-auto p-4 bg-[#F8FAFC]">
+                    <div className="grid grid-cols-5 gap-3">
+                      {Array.from({ length: activeMockTest.qCount }).map((_, i) => {
+                        const qNum = i + 1;
+                        const isCurrent = currentQuestion === qNum;
+                        const isAnswered = answers[qNum] !== undefined;
+                        const isVisited = visitedQuestions[qNum];
+                        const isMarked = markedForReview[qNum];
+
+                        let shapeClass = "w-11 h-11 flex items-center justify-center text-xs font-bold transition-all relative pt-1 ";
+                        let style = {};
+
+                        if (isCurrent) {
+                          shapeClass = "w-11 h-11 flex items-center justify-center text-xs font-bold transition-all bg-[#1A73E8] text-white rounded-md shadow-md scale-105 z-10";
+                        } else if (isMarked && isAnswered) {
+                          shapeClass += "bg-slate-500 text-white rounded-full shadow-sm";
+                          return (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                setVisitedQuestions(prev => ({ ...prev, [qNum]: true }));
+                                setCurrentQuestion(qNum);
+                                setShowMobilePalette(false);
+                              }}
+                              className={shapeClass}
+                            >
+                              {qNum}
+                              <div className="w-2.5 h-2.5 rounded-full bg-[#00C897] absolute bottom-0 right-0 border border-white"></div>
+                            </button>
+                          );
+                        } else if (isMarked) {
+                          shapeClass = "w-11 h-11 flex items-center justify-center text-xs font-bold transition-all bg-[#FFB800] text-white rounded-md shadow-sm";
+                        } else if (isAnswered) {
+                          shapeClass += "bg-[#00C897] text-white shadow-sm";
+                          style = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' };
+                        } else if (isVisited) {
+                          shapeClass += "bg-[#FF5C77] text-white shadow-sm";
+                          style = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' };
+                        } else {
+                          shapeClass += "bg-white border border-slate-200 text-slate-600 shadow-sm hover:bg-slate-50";
+                          style = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' };
+                        }
+
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setVisitedQuestions(prev => ({ ...prev, [qNum]: true }));
+                              setCurrentQuestion(qNum);
+                              setShowMobilePalette(false);
+                            }}
+                            className={shapeClass}
+                            style={style}
+                          >
+                            {qNum}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Drawer Footer Actions */}
+                  <div className="p-4 border-t border-slate-100 flex gap-2 bg-white">
+                    <button
+                      onClick={() => { setCurrentView('dashboard'); setSelectedExam(null); setActiveMockTest(null); }}
+                      className="flex-1 bg-white border border-slate-200 text-[#1A73E8] font-bold py-3 rounded-xl text-xs hover:bg-slate-50 transition-colors shadow-xs"
+                    >
+                      Skip Section
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowMobilePalette(false);
+                        setShowSubmitModal(true);
+                      }}
+                      className="flex-1 bg-[#1A73E8] text-white font-bold py-3 rounded-xl text-xs hover:bg-blue-700 transition-colors shadow-xs"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Question Grid Sidebar - Pentagon Design (Desktop Only) */}
+          <aside className="hidden lg:flex w-80 border-l border-slate-100 bg-white flex-col overflow-hidden shrink-0">
             {/* User Profile */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-end gap-3">
               <span className="text-xs font-bold text-slate-700">Student</span>
