@@ -1,0 +1,59 @@
+Created At: 2026-10-09T22:07:24+05:30
+Completed At: 2026-10-09T22:07:24+05:30
+File Path: `file:///c:/xampp/htdocs/agamakizh-ias-academy%20%281%29/src/components/dashboard/StoreView.tsx`
+Total Lines: 559
+Total Bytes: 29518
+Showing lines 320 to 370
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+320:                               <FileText className="h-2.5 w-2.5" /> {module.exams} sections
+321:                             </span>
+322:                           </div>
+323:                           <div className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+324:                             <FileText className="h-3 w-3 text-blue-400" /> {module.exams} Exams
+325:                           </div>
+326:                         </div>
+327:                         {isSubExpanded ? <ChevronUp className="h-5 w-5 text-slate-800" /> : <ChevronDown className="h-5 w-5 text-slate-800" />}
+328:                       </button>
+329: 
+330:                       {/* Timeline content */}
+331:                       {isSubExpanded && (
+332:                         <div className="px-4 pb-6 pt-2 border-t border-slate-100 bg-white">
+333:                           <div className="relative pl-4 space-y-4 before:absolute before:left-2 before:top-4 before:bottom-4 before:w-[1px] before:bg-slate-200">
+334:                             {/* Free Item */}
+335:                             <div className="relative z-10 flex items-start gap-3">
+336:                               <div className="w-5 h-5 rounded-full border border-emerald-500 bg-emerald-50 shrink-0 mt-3 -ml-2.5 text-[10px] flex items-center justify-center font-bold text-emerald-600 shadow-sm z-20">
+337:                                 1
+338:                               </div>
+339:                               <div className="flex-1 bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex flex-col justify-between">
+340:                                 <div className="flex items-start gap-3">
+341:                                   <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100 shrink-0">
+342:                                     <div className="relative">
+343:                                       <FileText className="h-5 w-5" />
+344:                                       <span className="absolute -bottom-1 -right-1 bg-white rounded-full w-3 h-3 flex items-center justify-center border border-emerald-200 text-[8px] font-bold text-emerald-600">?</span>
+345:                                     </div>
+346:                                   </div>
+347:                                   <div className="flex-1">
+348:                                     <h5 className="text-xs font-bold text-slate-800 leading-tight mb-1">{module.title} - national internation...</h5>
+349:                                     <div className="text-[9px] font-bold text-emerald-500 flex items-center gap-1.5">
+350:                                       <span>100 Qs</span>
+351:                                       <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+352:                                       <span>Exam</span>
+353:                                       <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+354:                                       <span>60 min</span>
+355:                                     </div>
+356:                                   </div>
+357:                                 </div>
+358:                                 <div className="mt-3 flex items-center justify-end">
+359:                                   <button onClick={() => setViewState('payment')} className="bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-[9px] font-bold px-3 py-1.5 rounded flex items-center gap-1.5 border border-emerald-200 transition-colors">
+360:                                     <Unlock className="h-3 w-3" /> FREE <ChevronRight className="h-3 w-3" />
+361:                                   </button>
+362:                                 </div>
+363:                               </div>
+364:                             </div>
+365: 
+366:                             {/* Locked Item */}
+367:                             <div className="relative z-10 flex items-start gap-3">
+368:                               <div className="w-5 h-5 rounded-full border border-slate-300 bg-white shrink-0 mt-3 -ml-2.5 text-[10px] flex items-center justify-center font-bold text-emerald-600 shadow-sm z-20">
+369:                                 2
+370:                               </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
