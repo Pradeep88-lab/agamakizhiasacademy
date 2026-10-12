@@ -22,7 +22,18 @@ import {
   CheckSquare,
   Eye,
   RefreshCw,
-  Download
+  Download,
+  Lock,
+  Smartphone,
+  Copy,
+  Camera,
+  CreditCard,
+  Star,
+  ChevronDown,
+  ChevronUp,
+  X,
+  ShoppingCart,
+  Upload
 } from 'lucide-react';
 import { formatVideoEmbed } from '../../lib/videoUtils';
 import { getBlob, openPdfPreview, downloadPdfFile, safeLocalStorageSet } from '../../lib/storage';
@@ -70,6 +81,116 @@ const chaptersRegistry: Record<string, Array<{
     { number: 10, titleEn: 'Atomic & Nuclear Physics', titleTa: 'அணு மற்றும் அணுக்கரு இயற்பியல்', duration: '50 mins', topicsCount: 6, descriptionEn: 'Radioactivity, nuclear fission & fusion, reactors in Tamil Nadu, and radiation safety.', descriptionTa: 'கதிரியக்கம், அணுக்கரு பிளவு மற்றும் இணைவு, தமிழ்நாட்டின் அணுமின் நிலையங்கள்.' },
     { number: 11, titleEn: 'Modern Physics & Semiconductors', titleTa: 'நவீன இயற்பியல் மற்றும் குறைக்கடத்திகள்', duration: '45 mins', topicsCount: 5, descriptionEn: 'Photoelectric effect, Diodes, transistors, solar cells, and LED technology.', descriptionTa: 'ஒளிமின் விளைவு, டையோடு, டிரான்சிஸ்டர், சூரிய மின்கலங்கள், LED தொழில்நுட்பம்.' },
     { number: 12, titleEn: 'Space Science, Satellites & ISRO Missions', titleTa: 'விண்வெளி அறிவியல் மற்றும் இஸ்ரோ திட்டங்கள்', duration: '55 mins', topicsCount: 6, descriptionEn: 'Chandrayaan, Gaganyaan, Aditya-L1, PSLV, GSLV, and Kulasekharapatnam spaceport.', descriptionTa: 'சந்திரயான், ககன்யான், ஆதித்யா-L1, பிஎஸ்எல்வி, குலசேகரப்பட்டினம் ஏவுதளம்.' }
+  ],
+  science: [
+    {
+      number: 1,
+      titleEn: 'Nature of Universe, Physical Quantities & Laws of Motion',
+      titleTa: 'பிரபஞ்சத்தின் இயல்பு, இயற்பியல் அளவுகள் மற்றும் இயக்க விதிகள்',
+      duration: '50 mins',
+      topicsCount: 6,
+      descriptionEn: 'Nature of Universe - Measurement of physical quantities - General scientific laws in motion - force, pressure, and energy.',
+      descriptionTa: 'அண்டத்தின் தோற்றம், இயற்பியல் அளவுகளின் அளவீடு, பொது அறிவியல் இயக்க விதிகள், விசை, அழுத்தம் மற்றும் ஆற்றல்.'
+    },
+    {
+      number: 2,
+      titleEn: 'Everyday Mechanics, Electricity, Magnetism & Nuclear Physics',
+      titleTa: 'இயக்கவியல், மின்னியல், காந்தவியல் மற்றும் அணுக்கரு இயற்பியல் அன்றாட பயன்பாடுகள்',
+      duration: '55 mins',
+      topicsCount: 6,
+      descriptionEn: 'Everyday application of the basic principles of mechanics, electricity, magnetism, light, sound, heat, and nuclear physics in our daily life.',
+      descriptionTa: 'இயக்கவியல், மின்னியல், காந்தவியல், ஒளி, ஒலி, வெப்பம் மற்றும் அணுக்கரு இயற்பியலின் அன்றாட வாழ்வியல் பயன்பாடுகள்.'
+    },
+    {
+      number: 3,
+      titleEn: 'Elements, Compounds, Acids, Bases & Salts',
+      titleTa: 'தனிமங்கள், சேர்மங்கள், அமிலங்கள், காரங்கள் மற்றும் உப்புகள்',
+      duration: '45 mins',
+      topicsCount: 5,
+      descriptionEn: 'Elements and compounds, acids, bases, salts, pH scale, chemical formulas and everyday applications.',
+      descriptionTa: 'தனிமங்கள் மற்றும் சேர்மங்கள், அமிலங்கள், காரங்கள், உப்புகள் மற்றும் அன்றாட வேதியியல்.'
+    },
+    {
+      number: 4,
+      titleEn: 'Petroleum, Fertilizers, Pesticides, Metallurgy & Food Adulterants',
+      titleTa: 'பெட்ரோலியப் பொருட்கள், உரங்கள், பூச்சிக்கொல்லிகள், உலோகவியல் மற்றும் உணவு கலப்படம்',
+      duration: '50 mins',
+      topicsCount: 5,
+      descriptionEn: 'Petroleum products, fertilizers, pesticides, metallurgy processes, and detection of food adulterants.',
+      descriptionTa: 'பெட்ரோலியப் பொருட்கள், உரங்கள், பூச்சிக்கொல்லிகள், உலோகவியல் மற்றும் உணவு கலப்படம் கண்டறிதல்.'
+    },
+    {
+      number: 5,
+      titleEn: 'Main Concepts of Life Science & Classification of Organisms',
+      titleTa: 'உயிரறிவியலின் அடிப்படைக் கருத்துக்கள் மற்றும் உயிரினங்களின் வகைப்பாடு',
+      duration: '45 mins',
+      topicsCount: 5,
+      descriptionEn: 'Main concepts of life science, cell biology, five kingdom classification of living organisms.',
+      descriptionTa: 'உயிரறிவியலின் முக்கிய கருத்துக்கள், செல் உயிரியல் மற்றும் உயிரினங்களின் வகைப்பாடு.'
+    },
+    {
+      number: 6,
+      titleEn: 'Evolution, Genetics & Human Physiology',
+      titleTa: 'பரிணாமம், மரபியல் மற்றும் மனித உடலியங்கியல்',
+      duration: '55 mins',
+      topicsCount: 6,
+      descriptionEn: 'Principles of evolution, Mendelian genetics, DNA structure, and human organ physiology.',
+      descriptionTa: 'பரிணாம வளர்ச்சி, மரபியல் விதிகள், DNA அமைப்பு மற்றும் மனித உடலியங்கியல் உறுப்பு மண்டலங்கள்.'
+    },
+    {
+      number: 7,
+      titleEn: 'Nutrition, Health & Hygiene',
+      titleTa: 'ஊட்டச்சத்து, உடல்நலம் மற்றும் சுகாதாரம்',
+      duration: '40 mins',
+      topicsCount: 5,
+      descriptionEn: 'Balanced nutrition, macronutrients, vitamins, minerals, deficiencies, sanitation and hygiene.',
+      descriptionTa: 'சமச்சீர் உணவு, வைட்டமின்கள், தாதுக்கள், குறைபாட்டு நோய்கள் மற்றும் சுகாதாரம்.'
+    },
+    {
+      number: 8,
+      titleEn: 'Human Diseases, Causes & Prevention',
+      titleTa: 'மனித நோய்கள், காரணங்கள் மற்றும் தடுப்பு முறைகள்',
+      duration: '50 mins',
+      topicsCount: 6,
+      descriptionEn: 'Communicable and non-communicable human diseases, bacterial/viral infections, immunity and vaccines.',
+      descriptionTa: 'தொற்று மற்றும் தொற்றா மனித நோய்கள், பாக்டீரியா, வைரஸ் தொற்றுகள், நோய் எதிர்ப்பு சக்தி மற்றும் தடுப்பூசிகள்.'
+    },
+    {
+      number: 9,
+      titleEn: 'Environmental Science & Ecology',
+      titleTa: 'சுற்றுச்சூழல் அறிவியல் மற்றும் சூழலியல்',
+      duration: '45 mins',
+      topicsCount: 5,
+      descriptionEn: 'Environmental science, ecosystems, biodiversity, pollution control and conservation efforts.',
+      descriptionTa: 'சுற்றுச்சூழல் அறிவியல், சுற்றுச்சூழல் அமைப்புகள், பல்லுயிர் பெருக்கம் மற்றும் மாசுக் கட்டுப்பாடு.'
+    },
+    {
+      number: 10,
+      titleEn: 'Latest Inventions in Science and Technology',
+      titleTa: 'அறிவியல் மற்றும் தொழில்நுட்பத்தின் அண்மைக்கால கண்டுபிடிப்புகள்',
+      duration: '45 mins',
+      topicsCount: 5,
+      descriptionEn: 'Latest inventions in science and technology, AI, biotechnology, nanotechnology, and robotics.',
+      descriptionTa: 'அறிவியல் தொழில்நுட்பத்தின் அண்மைக்கால கண்டுபிடிப்புகள், நானோ டெக்னாலஜி மற்றும் ரோபோட்டிக்ஸ்.'
+    },
+    {
+      number: 11,
+      titleEn: 'Space Science, Nuclear Technology & Defense Innovations',
+      titleTa: 'விண்வெளி அறிவியல், அணு தொழில்நுட்பம் மற்றும் பாதுகாப்பு கண்டுபிடிப்புகள்',
+      duration: '50 mins',
+      topicsCount: 5,
+      descriptionEn: 'ISRO space missions (Chandrayaan, Gaganyaan, Aditya-L1), DRDO missiles, and nuclear research.',
+      descriptionTa: 'இஸ்ரோ விண்வெளி திட்டங்கள், DRDO பாதுகாப்பு ஏவுகணைகள் மற்றும் அணு ஆராய்ச்சி மையங்கள்.'
+    },
+    {
+      number: 12,
+      titleEn: 'Science Current Affairs & High-Yield Revisions',
+      titleTa: 'அறிவியல் நடப்பு நிகழ்வுகள் மற்றும் முக்கிய திருப்புதல் வினாக்கள்',
+      duration: '55 mins',
+      topicsCount: 6,
+      descriptionEn: 'Recent science breakthroughs, scientific awards & Nobel prizes, and science current affairs.',
+      descriptionTa: 'சமீபத்திய அறிவியல் சாதனைகள், நோபல் பரிசுகள் மற்றும் அறிவியல் நடப்பு நிகழ்வுகள்.'
+    }
   ],
   polity: [
     { number: 1, titleEn: 'Historical Background & Making of the Constitution', titleTa: 'வரலாற்று பின்னணி மற்றும் அரசியலமைப்பு உருவாக்கம்', duration: '55 mins', topicsCount: 7, descriptionEn: 'Acts under East India Company & British Crown, Constituent Assembly, Drafting Committee, and Enactment.', descriptionTa: 'பிரிட்டிஷ் கால சட்டங்கள், இந்திய அரசியலமைப்பு நிர்ணய சபை, வரைவுக் குழு மற்றும் அமலாக்கம்.' },
@@ -258,6 +379,90 @@ const chapterOneContents: Record<string, {
       }
     ]
   },
+  science: {
+    summaryEn: `Nature of Universe - Measurement of physical quantities - General scientific laws in motion - force, pressure, and energy - Everyday application of the basic principles of mechanics, electricity, magnetism, light, sound, heat, and nuclear physics in our daily life; Elements and compounds, acids, bases, salts, petroleum products, fertilizers, pesticides, metallurgy, and food adulterants; main concepts of life science, classification of living organisms, evolution, genetics, physiology, nutrition, health and hygiene, human diseases; Environmental science; Latest inventions in science and technology; Current affairs.`,
+    summaryTa: `பிரபஞ்சத்தின் இயல்பு - இயற்பியல் அளவுகளின் அளவீடு - இயக்கவியல் பொது அறிவியல் விதிகள் - விசை, அழுத்தம் மற்றும் ஆற்றல் - இயக்கவியல், மின்னியல், காந்தவியல், ஒளி, ஒலி, வெப்பம் மற்றும் அணுக்கரு இயற்பியலின் அன்றாட பயன்பாடுகள்; தனிமங்கள், சேர்மங்கள், அமிலங்கள், காரங்கள், உப்புகள், பெட்ரோலிய பொருட்கள், உரங்கள், பூச்சிக்கொல்லிகள், உலோகவியல் மற்றும் உணவு கலப்படம்; உயிரறிவியலின் முக்கிய கருத்துக்கள், உயிரினங்களின் வகைப்பாடு, பரிணாமம், மரபியல், உடலியங்கியல், ஊட்டச்சத்து, உடல்நலம், மனித நோய்கள்; சுற்றுச்சூழல் அறிவியல்; அறிவியல் தொழில்நுட்பத்தில் அண்மைக்கால கண்டுபிடிப்புகள்; நடப்பு நிகழ்வுகள்.`,
+    keyPoints: [
+      {
+        title: '1. Nature of Universe & Measurement of physical quantities',
+        desc: 'Nature of Universe, Big Bang Theory, Solar System, Base SI Units (m, kg, s, A, K, mol, cd), Derived units, and Dimensional formulas for TNPSC examinations.',
+        titleTa: '1. பிரபஞ்சத்தின் இயல்பு & இயற்பியல் அளவுகளின் அளவீடு',
+        descTa: 'பிரபஞ்சத்தின் தோற்றம், சூரிய குடும்பம், அடிப்படை SI அலகுகள், வழி அலகுகள் மற்றும் பரிமாண வாய்ப்பாடுகள்.'
+      },
+      {
+        title: '2. General scientific laws in motion - force, pressure, and energy',
+        desc: 'Newton’s three laws of motion, inertia of rest and motion, linear momentum, gravitation, Pascal’s law, Archimedes principle, kinetic & potential energy conservation.',
+        titleTa: '2. இயக்கவியல் பொது அறிவியல் விதிகள் - விசை, அழுத்தம் மற்றும் ஆற்றல்',
+        descTa: 'நியூட்டனின் இயக்க விதிகள், நிலைமம், உந்தம், புவியீர்ப்பு, பாஸ்கல் மற்றும் ஆர்க்கிமிடிஸ் தத்துவங்கள், ஆற்றல் மாறாக் கோட்பாடு.'
+      },
+      {
+        title: '3. Everyday application of mechanics, electricity, magnetism, light, sound, heat & nuclear physics',
+        desc: 'Domestic electrical wiring, Ohm’s law, electromagnetic induction, mirror and lens optics, Doppler acoustics, heat transfer, and peaceful applications of nuclear energy.',
+        titleTa: '3. அன்றாட வாழ்வியல் இயற்பியல் தத்துவங்களின் பயன்பாடுகள்',
+        descTa: 'மின்சுற்றுகள், ஓம் விதி, மின்காந்தத் தூண்டல், ஒளியியல் விதிகள், ஒலியியல் அலைகள் மற்றும் வெப்பப் பரிமாற்றம்.'
+      },
+      {
+        title: '4. Elements and compounds, acids, bases, salts, petroleum, fertilizers, pesticides, metallurgy & food adulterants',
+        desc: 'Periodic table basics, acids & bases pH scale, salts in daily life, petroleum fractions, chemical fertilizers (NPK), pesticides, extraction metallurgy, and food adulteration tests.',
+        titleTa: '4. தனிமங்கள், சேர்மங்கள், அமிலங்கள், காரங்கள், உப்புகள் & பயன்பாட்டு வேதியியல்',
+        descTa: 'அமிலங்கள்-காரங்கள் pH மதிப்பு, பெட்ரோலிய பொருட்கள், உரங்கள், பூச்சிக்கொல்லிகள் மற்றும் உணவு கலப்படம்.'
+      },
+      {
+        title: '5. Main concepts of life science, classification, evolution, genetics, physiology, nutrition, health & human diseases',
+        desc: 'Five kingdom classification, cell organelles, Mendelian inheritance, human organ systems, balanced diet, vitamins deficiency, communicable & non-communicable human diseases.',
+        titleTa: '5. உயிரறிவியல், வகைப்பாடு, மரபியல், உடலியங்கியல், ஊட்டச்சத்து & மனித நோய்கள்',
+        descTa: 'உயிரினங்களின் வகைப்பாடு, செல் உயிரியல், மரபியல், மனித உடலியங்கியல், வைட்டமின்கள் மற்றும் மனித நோய்கள்.'
+      },
+      {
+        title: '6. Environmental science, latest inventions in science & technology, and current affairs',
+        desc: 'Ecosystems, biodiversity hotspots in Tamil Nadu, green energy, AI, robotics, nanotechnology, Chandrayaan, Gaganyaan, Aditya-L1 and recent science breakthroughs.',
+        titleTa: '6. சுற்றுச்சூழல் அறிவியல், புதிய கண்டுபிடிப்புகள் & நடப்பு நிகழ்வுகள்',
+        descTa: 'சுற்றுச்சூழல் பாதுகாப்பு, புதுப்பிக்கத்தக்க ஆற்றல், இஸ்ரோ விண்வெளி திட்டங்கள், AI மற்றும் அறிவியல் நடப்பு நிகழ்வுகள்.'
+      }
+    ],
+    videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
+    videoTitle: 'MISSION 100 | General Science Unit 1 | Nature of Universe & Complete Syllabus',
+    pdfTitle: '1. NATURE OF UNIVERSE & GENERAL SCIENCE NOTES.pdf',
+    pdfFileName: '1. NATURE OF UNIVERSE & GENERAL SCIENCE NOTES.pdf',
+    quiz: [
+      {
+        question: 'Which of the following is the base SI unit of Thermodynamic Temperature?',
+        questionTa: 'வெப்ப இயக்கவியல் வெப்பநிலையின் (Thermodynamic Temperature) அடிப்படை SI அலகு எது?',
+        options: ['Celsius (°C)', 'Fahrenheit (°F)', 'Kelvin (K)', 'Joule (J)'],
+        optionsTa: ['செல்சியஸ் (°C)', 'பாரன்ஹீட் (°F)', 'கெல்வின் (K)', 'ஜூல் (J)'],
+        correct: 2,
+        explanation: 'Kelvin (K) is the SI base unit of thermodynamic temperature.',
+        explanationTa: 'வெப்ப இயக்கவியல் வெப்பநிலையின் அடிப்படை SI அலகு கெல்வின் (K) ஆகும்.'
+      },
+      {
+        question: 'Rocket propulsion is an application of which fundamental physical law?',
+        questionTa: 'ராக்கெட் ஏவுதல் எந்த அடிப்படை இயற்பியல் விதியின் பயன்பாடாகும்?',
+        options: ['Conservation of Linear Momentum', 'Bernoulli\'s Principle', 'Pascal\'s Law', 'Law of Universal Gravitation'],
+        optionsTa: ['நேர்க்கோட்டு உந்த மாறாக் கோட்பாடு', 'பெர்னௌலி தத்துவம்', 'பாஸ்கல் விதி', 'அகில ஈர்ப்பு விதி'],
+        correct: 0,
+        explanation: 'Rocket propulsion functions on Newton\'s third law and conservation of linear momentum.',
+        explanationTa: 'ராக்கெட் ஏவுதல் என்பது நியூட்டனின் மூன்றாம் விதி மற்றும் நேர்க்கோட்டு உந்த மாறாக் கோட்பாட்டின் அடிப்படையில் செயல்படுகிறது.'
+      },
+      {
+        question: 'What is the pH range of human blood in healthy condition?',
+        questionTa: 'ஆரோக்கியமான மனித இரத்தத்தின் pH வரம்பு என்ன?',
+        options: ['6.0 – 6.5', '7.35 – 7.45', '8.5 – 9.0', '5.0 – 5.5'],
+        optionsTa: ['6.0 – 6.5', '7.35 – 7.45 (லேசான காரத்தன்மை)', '8.5 – 9.0', '5.0 – 5.5'],
+        correct: 1,
+        explanation: 'Human arterial blood pH strictly stays within 7.35 to 7.45 (slightly alkaline).',
+        explanationTa: 'மனித இரத்தத்தின் pH மதிப்பு 7.35 முதல் 7.45 வரை இருக்கும் (சிறிது காரத்தன்மை).'
+      },
+      {
+        question: 'Deficiency of Vitamin C leads to which of the following diseases?',
+        questionTa: 'வைட்டமின் C குறைபாட்டினால் ஏற்படும் நோய் எது?',
+        options: ['Rickets', 'Beriberi', 'Scurvy', 'Night Blindness'],
+        optionsTa: ['ரிக்கெட்ஸ்', 'பெரிபெரி', 'ஸ்கர்வி (Scurvy)', 'மாலைக்கண் நோய்'],
+        correct: 2,
+        explanation: 'Vitamin C (Ascorbic acid) deficiency causes Scurvy, characterized by bleeding gums.',
+        explanationTa: 'வைட்டமின் C குறைபாட்டால் ஈறுகளில் ரத்தக்கசிவு ஏற்படும் ஸ்கர்வி நோய் உண்டாகிறது.'
+      }
+    ]
+  },
   polity: {
     summaryEn: `Indian Polity Chapter 1 traces the constitutional evolution from the Regulating Act of 1773 under the British East India Company to the landmark Government of India Act 1935 and Indian Independence Act 1947. It covers the creation of the Constituent Assembly in 1946, its committees, drafting, and adoption of the Constitution on 26 November 1949.`,
     summaryTa: `இந்திய அரசியலமைப்பு அத்தியாயம் 1: 1773 ஒழுங்குமுறைச் சட்டம் முதல் 1935 இந்திய அரசுச் சட்டம் வரையிலான வரலாற்றுப் பின்னணியையும், 1946-ல் அமைக்கப்பட்ட அரசியலமைப்பு நிர்ணய சபையின் செயல்பாடு மற்றும் டாக்டர் பி.ஆர். அம்பேத்கர் தலைமையிலான வரைவுக் குழுவின் பணியையும் விரிவாக விளக்குகிறது.`,
@@ -271,7 +476,7 @@ const chapterOneContents: Record<string, {
     ],
     videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
     videoTitle: 'Complete Indian Polity Chapter 1: Making of the Constitution & Historic Acts',
-    pdfTitle: 'Agamakizh_Indian_Polity_Chapter1_Notes.pdf',
+    pdfTitle: 'Ambedkar_Indian_Polity_Chapter1_Notes.pdf',
     quiz: [
       {
         question: 'Who first formally proposed the idea of a Constituent Assembly for India in 1934?',
@@ -318,7 +523,7 @@ const chapterOneContents: Record<string, {
     ],
     videoUrl: 'https://www.youtube.com/watch?v=W4PYzrYdYEw',
     videoTitle: "MISSION I'MPOSSIBLE | Day 38 | History | Indus Valley Civilization | Mr. S.P. Velan",
-    pdfTitle: 'Agamakizh_Indus_Valley_Civilization_Notes.pdf',
+    pdfTitle: 'Ambedkar_Indus_Valley_Civilization_Notes.pdf',
     quiz: [
       {
         question: 'Which Indus Valley site is famous for the world\'s earliest tidal dockyard and maritime port?',
@@ -377,7 +582,7 @@ const chapterOneContents: Record<string, {
     ],
     videoUrl: 'https://www.youtube.com/watch?v=W4PYzrYdYEw',
     videoTitle: 'TNPSC & SSC Maths Chapter 1: Simplification, BODMAS & Number System Shortcuts',
-    pdfTitle: 'Agamakizh_Maths_Chapter1_Simplification_Formulas.pdf',
+    pdfTitle: 'Ambedkar_Maths_Chapter1_Simplification_Formulas.pdf',
     quiz: [
       {
         question: 'Evaluate the expression: 24 ÷ 6 × (3 + 1) - 10',
@@ -463,7 +668,7 @@ const chapterOneContents: Record<string, {
     ],
     videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
     videoTitle: 'Reasoning Chapter 1: Coding-Decoding Mastery & Speed Tricks for TNPSC / SSC / RRB',
-    pdfTitle: 'Agamakizh_Reasoning_Chapter1_Coding_Decoding.pdf',
+    pdfTitle: 'Ambedkar_Reasoning_Chapter1_Coding_Decoding.pdf',
     quiz: [
       {
         question: 'If in a code language MADRAS is written as NBESBT, how is BOMBAY written in that code?',
@@ -608,12 +813,12 @@ export default function SubjectChapterView({
   onOpenPdf
 }: SubjectChapterViewProps) {
   const [activeLanguage, setActiveLanguage] = useState<'english' | 'tamil'>(() => {
-    return (localStorage.getItem('agamakizh_study_medium') as 'english' | 'tamil') || language || 'english';
+    return (localStorage.getItem('ambedkar_study_medium') as 'english' | 'tamil') || language || 'english';
   });
 
   const toggleLanguage = (lang: 'english' | 'tamil') => {
     setActiveLanguage(lang);
-    localStorage.setItem('agamakizh_study_medium', lang);
+    localStorage.setItem('ambedkar_study_medium', lang);
     if (onLanguageChange) {
       onLanguageChange(lang);
     }
@@ -629,6 +834,82 @@ export default function SubjectChapterView({
   const [currentChapter, setCurrentChapter] = useState<number | null>(initialChapter);
   const [activeTab, setActiveTab] = useState<'notes' | 'video' | 'quiz' | 'pdf'>('notes');
   const [completedChapters, setCompletedChapters] = useState<number[]>([1]);
+
+  // Check enrollment state from localStorage
+  const [isEnrolled, setIsEnrolled] = useState(() => {
+    try {
+      const list = JSON.parse(localStorage.getItem('ambedkar_enrolled_courses') || '[]');
+      return list.some((c: string) => 
+        c.toLowerCase().includes(examName.toLowerCase()) || 
+        examName.toLowerCase().includes(c.toLowerCase()) ||
+        c === 'all-in-one-2026'
+      );
+    } catch {
+      return false;
+    }
+  });
+
+  // Manual payment state
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [copiedUpi, setCopiedUpi] = useState(false);
+  const [showBankDetails, setShowBankDetails] = useState(false);
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const [transactionId, setTransactionId] = useState('');
+  const [isSubmittingProof, setIsSubmittingProof] = useState(false);
+  const [paymentSubmittedSuccess, setPaymentSubmittedSuccess] = useState(false);
+
+  const upiId = localStorage.getItem('ambedkar_upi_id') || 'name@upi';
+
+  const handleCopyUpi = () => {
+    navigator.clipboard.writeText(upiId);
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setScreenshotFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScreenshotPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmitProof = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!screenshotPreview && !transactionId) {
+      alert('Please upload a screenshot or enter your Transaction / UTR ID.');
+      return;
+    }
+    setIsSubmittingProof(true);
+
+    setTimeout(() => {
+      setIsSubmittingProof(false);
+      setPaymentSubmittedSuccess(true);
+
+      // Save unlocked state
+      try {
+        const currentPurchases = JSON.parse(localStorage.getItem('ambedkar_enrolled_courses') || '[]');
+        if (!currentPurchases.includes(examName)) {
+          currentPurchases.push(examName);
+          localStorage.setItem('ambedkar_enrolled_courses', JSON.stringify(currentPurchases));
+        }
+      } catch {}
+      setIsEnrolled(true);
+
+      setTimeout(() => {
+        setPaymentSubmittedSuccess(false);
+        setShowPaymentModal(false);
+        setScreenshotFile(null);
+        setScreenshotPreview(null);
+        setTransactionId('');
+      }, 2000);
+    }, 1000);
+  };
   
   // Quiz state for Chapter 1
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
@@ -639,7 +920,7 @@ export default function SubjectChapterView({
 
   // Check for Admin Custom Chapter Module with reactive state
   const [customModules, setCustomModules] = useState<Record<string, any>>(() => {
-    return JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+    return JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
   });
 
   const [resolvedPdfData, setResolvedPdfData] = useState<{ url: string; isBlob: boolean } | null>(null);
@@ -654,7 +935,7 @@ export default function SubjectChapterView({
   useEffect(() => {
     const handleSync = () => {
       try {
-        const local = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+        const local = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
         setCustomModules(local);
       } catch (e) {
         console.warn('Sync failed:', e);
@@ -662,11 +943,11 @@ export default function SubjectChapterView({
     };
 
     window.addEventListener('storage', handleSync);
-    window.addEventListener('agamakizh_chapter_updated', handleSync);
+    window.addEventListener('ambedkar_chapter_updated', handleSync);
 
     let bc: BroadcastChannel | null = null;
     try {
-      bc = new BroadcastChannel('agamakizh_channel');
+      bc = new BroadcastChannel('ambedkar_channel');
       bc.onmessage = (msg) => {
         if (msg.data?.type === 'CHAPTER_UPDATED') {
           handleSync();
@@ -676,7 +957,7 @@ export default function SubjectChapterView({
 
     return () => {
       window.removeEventListener('storage', handleSync);
-      window.removeEventListener('agamakizh_chapter_updated', handleSync);
+      window.removeEventListener('ambedkar_chapter_updated', handleSync);
       if (bc) bc.close();
     };
   }, []);
@@ -694,7 +975,7 @@ export default function SubjectChapterView({
         if (Object.keys(remoteData).length > 0) {
           setCustomModules((prev) => {
             const merged = { ...prev, ...remoteData };
-            safeLocalStorageSet('agamakizh_chapter_modules', merged);
+            safeLocalStorageSet('ambedkar_chapter_modules', merged);
             return merged;
           });
         }
@@ -742,7 +1023,7 @@ export default function SubjectChapterView({
   const handleManualPdfSync = async () => {
     setIsPdfLoading(true);
     try {
-      const local = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+      const local = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
       setCustomModules(local);
       const curr = local[specificExamKey] || local[customChapterKey];
       if (curr?._pdfUrl_indexedDbKey) {
@@ -829,6 +1110,20 @@ export default function SubjectChapterView({
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Orange Cart Pricing Pill matching screenshot */}
+          {!isEnrolled && (
+            <button
+              onClick={() => setShowPaymentModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#ea580c] hover:bg-[#c2410c] text-white rounded-xl text-xs font-black shadow-xs transition-all active:scale-95 cursor-pointer"
+              title="Unlock full exam access"
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+              <span className="line-through text-orange-200 text-[10px]">₹2999</span>
+              <span className="text-white font-black text-xs">₹299</span>
+              <span className="bg-[#facc15] text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded">90%</span>
+            </button>
+          )}
+
           {/* English / Tamil Medium Switcher */}
           <div className="flex items-center p-1 bg-white border border-slate-200/90 rounded-2xl shadow-xs">
             <button
@@ -1449,69 +1744,343 @@ export default function SubjectChapterView({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {chapters.map((ch) => {
+              {chapters.map((ch, idx) => {
                 const isChapter1 = ch.number === 1;
                 const isCompleted = completedChapters.includes(ch.number);
+                const isLocked = !isChapter1 && !isEnrolled;
 
                 return (
-                  <motion.div
-                    key={ch.number}
-                    whileHover={{ y: -3 }}
-                    onClick={() => handleStartChapter(ch.number)}
-                    className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-4 ${
-                      isChapter1 
-                        ? 'bg-blue-50/50 border-blue-300 hover:border-blue-500 shadow-sm ring-2 ring-blue-500/10' 
-                        : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
-                    }`}
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${
-                          isChapter1 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'
-                        }`}>
-                          {activeLanguage === 'tamil' ? `அத்தியாயம் ${ch.number}` : `Chapter ${ch.number}`}
-                        </span>
-
-                        <div className="flex items-center gap-2">
-                          {isCompleted && (
-                            <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
-                              <Check className="h-3 w-3" /> {activeLanguage === 'tamil' ? 'முடிந்தது' : 'Done'}
+                  <React.Fragment key={ch.number}>
+                    <motion.div
+                      whileHover={{ y: -3 }}
+                      onClick={() => {
+                        if (isLocked) {
+                          setShowPaymentModal(true);
+                        } else {
+                          handleStartChapter(ch.number);
+                        }
+                      }}
+                      className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between gap-4 ${
+                        isLocked
+                          ? 'bg-slate-50/70 border-slate-200 opacity-90 hover:border-amber-300'
+                          : isChapter1 
+                            ? 'bg-blue-50/50 border-blue-300 hover:border-blue-500 shadow-sm ring-2 ring-blue-500/10' 
+                            : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${
+                              isLocked 
+                                ? 'bg-amber-100 text-amber-800' 
+                                : isChapter1 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'
+                            }`}>
+                              {activeLanguage === 'tamil' ? `அத்தியாயம் ${ch.number}` : `Chapter ${ch.number}`}
                             </span>
-                          )}
-                          <span className="text-[10px] text-slate-400 font-semibold">{ch.duration}</span>
+
+                            {isChapter1 && (
+                              <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border border-emerald-500 text-emerald-600 bg-emerald-50">
+                                FREE
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            {isLocked ? (
+                              <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
+                                <Lock className="w-3.5 h-3.5" />
+                              </div>
+                            ) : isCompleted ? (
+                              <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                                <Check className="h-3 w-3" /> {activeLanguage === 'tamil' ? 'முடிந்தது' : 'Done'}
+                              </span>
+                            ) : null}
+                            <span className="text-[10px] text-slate-400 font-semibold">{ch.duration}</span>
+                          </div>
                         </div>
+
+                        <h4 className="text-sm font-bold text-slate-900 leading-snug">
+                          {activeLanguage === 'tamil' ? ch.titleTa : ch.titleEn}
+                        </h4>
+
+                        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                          {activeLanguage === 'tamil' ? ch.descriptionTa : ch.descriptionEn}
+                        </p>
                       </div>
 
-                      <h4 className="text-sm font-bold text-slate-900 leading-snug">
-                        {activeLanguage === 'tamil' ? ch.titleTa : ch.titleEn}
-                      </h4>
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold">
+                        <span className="text-[10px] text-slate-400 uppercase tracking-wider">
+                          {ch.topicsCount} {activeLanguage === 'tamil' ? 'முக்கியக் குறிப்புகள்' : 'Key Topics'}
+                        </span>
 
-                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                        {activeLanguage === 'tamil' ? ch.descriptionTa : ch.descriptionEn}
-                      </p>
-                    </div>
+                        <span className={`flex items-center gap-1 ${
+                          isLocked 
+                            ? 'text-amber-600 font-black' 
+                            : isChapter1 ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'
+                        }`}>
+                          {isLocked 
+                            ? 'Unlock Content' 
+                            : isChapter1 
+                              ? (activeLanguage === 'tamil' ? 'அத்தியாயம் 1 படிக்க' : 'Study Chapter 1') 
+                              : (activeLanguage === 'tamil' ? 'திறக்க' : 'Open Chapter')}
+                          {isLocked ? <Lock className="h-3 w-3" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                        </span>
+                      </div>
+                    </motion.div>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold">
-                      <span className="text-[10px] text-slate-400 uppercase tracking-wider">
-                        {ch.topicsCount} {activeLanguage === 'tamil' ? 'முக்கியக் குறிப்புகள்' : 'Key Topics'}
-                      </span>
-
-                      <span className={`flex items-center gap-1 ${
-                        isChapter1 ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'
-                      }`}>
-                        {isChapter1 
-                          ? (activeLanguage === 'tamil' ? 'அத்தியாயம் 1 படிக்க' : 'Study Chapter 1') 
-                          : (activeLanguage === 'tamil' ? 'திறக்க' : 'Open Chapter')}
-                        <ChevronRight className="h-3.5 w-3.5" />
-                      </span>
-                    </div>
-                  </motion.div>
+                    {/* Prominent Unlock Card shown right after chapter 1 matching screenshot 4 */}
+                    {idx === 0 && !isEnrolled && (
+                      <div className="col-span-full bg-[#fffbeb] border-2 border-amber-300/80 rounded-3xl p-6 text-center space-y-3 shadow-xs my-2">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center mx-auto text-amber-600 shadow-2xs">
+                          <Lock className="w-6 h-6" />
+                        </div>
+                        <h4 className="font-black text-base sm:text-lg text-slate-900">
+                          Unlock the Full Selection Path
+                        </h4>
+                        <p className="text-xs text-slate-600 max-w-sm mx-auto">
+                          Get access to all lessons, interactive question bank and premium study materials.
+                        </p>
+                        <button
+                          onClick={() => {
+                            if (chapters.length > 0) {
+                              handleStartChapter(chapters[0].number);
+                            }
+                          }}
+                          className="px-6 py-2.5 bg-[#f97316] hover:bg-[#ea580c] text-white font-black rounded-xl text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2"
+                        >
+                          <span>Free Test</span>
+                        </button>
+                      </div>
+                    )}
+                  </React.Fragment>
                 );
               })}
             </div>
           </div>
         </div>
       )}
+
+
+      {/* Manual Payment Modal matching Screenshot 3 */}
+      <AnimatePresence>
+        {showPaymentModal && (
+          <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border border-slate-100 flex flex-col my-auto max-h-[92vh]"
+            >
+              {/* Header */}
+              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  className="p-1 text-slate-500 hover:text-slate-900 rounded-lg transition-colors cursor-pointer"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <h3 className="font-extrabold text-base text-slate-900">
+                  Manual Payment
+                </h3>
+                <div className="w-6" />
+              </div>
+
+              {/* Scrollable Body */}
+              <div className="p-5 sm:p-6 overflow-y-auto space-y-6">
+                <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-5 text-center flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-500 mb-2 shadow-xs">
+                    <Star className="w-6 h-6 fill-current text-amber-400" />
+                  </div>
+                  <h4 className="font-extrabold text-slate-900 text-lg">
+                    Premium Access
+                  </h4>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5">
+                    {examName}
+                  </p>
+                  <span className="text-3xl font-black text-[#0284c7] mt-2">
+                    ₹299
+                  </span>
+                </div>
+
+                <div className="text-left">
+                  <h4 className="font-black text-sm text-slate-900 mb-3">
+                    Payment Instructions
+                  </h4>
+
+                  {/* Step 1: Make Payment */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3 mb-4 shadow-2xs">
+                    <div className="flex items-center gap-2 text-slate-900 font-extrabold text-xs">
+                      <CreditCard className="w-4 h-4 text-blue-600" />
+                      <span>Step 1: Make Payment</span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Choose any payment method:
+                    </p>
+
+                    <div className="bg-[#f0f9ff] border border-blue-200 rounded-xl p-3.5 space-y-1.5">
+                      <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
+                        <Smartphone className="w-4 h-4 text-blue-600" />
+                        <span>UPI Payment (Recommended)</span>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="font-extrabold text-blue-700 text-sm tracking-wide">
+                          {upiId}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleCopyUpi}
+                          className="px-2.5 py-1 bg-white hover:bg-slate-50 border border-blue-200 text-blue-700 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+                        >
+                          {copiedUpi ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              <span className="text-emerald-600">Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      <p className="text-[11px] text-slate-400 font-medium">
+                        Use GPay, PhonePe, Paytm, or any UPI app
+                      </p>
+                    </div>
+
+                    <div className="border border-slate-100 rounded-xl overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setShowBankDetails(!showBankDetails)}
+                        className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-100/50 flex items-center justify-between text-xs font-bold text-slate-700 cursor-pointer transition-colors"
+                      >
+                        <span>Bank Transfer / NEFT / RTGS</span>
+                        {showBankDetails ? (
+                          <ChevronUp className="w-4 h-4 text-slate-400" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-slate-400" />
+                        )}
+                      </button>
+
+                      {showBankDetails && (
+                        <div className="p-3.5 bg-white text-xs space-y-1.5 text-slate-600 border-t border-slate-100">
+                          <p><strong className="text-slate-800">Account Name:</strong> Ambedkar IAS Academy</p>
+                          <p><strong className="text-slate-800">Account No:</strong> 50200083921049</p>
+                          <p><strong className="text-slate-800">IFSC Code:</strong> HDFC0001234</p>
+                          <p><strong className="text-slate-800">Branch:</strong> Chennai Main Branch</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Step 2: Take Screenshot */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-2 mb-4 shadow-2xs">
+                    <div className="flex items-center gap-2 text-slate-900 font-extrabold text-xs">
+                      <Camera className="w-4 h-4 text-blue-600" />
+                      <span>Step 2: Take Screenshot</span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      After making the payment, take a clear screenshot of the payment confirmation screen showing:
+                    </p>
+                    <ul className="text-xs text-slate-600 space-y-1 pl-3 font-medium list-disc">
+                      <li>Transaction ID</li>
+                      <li>Date & Time</li>
+                      <li>Amount (₹299.0)</li>
+                      <li>Receiver details</li>
+                    </ul>
+                  </div>
+
+                  {/* Step 3: Upload Payment Proof */}
+                  <form onSubmit={handleSubmitProof} className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3 shadow-2xs">
+                    <div className="flex items-center gap-2 text-slate-900 font-extrabold text-xs">
+                      <Upload className="w-4 h-4 text-blue-600" />
+                      <span>Step 3: Upload Payment Proof</span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Select and upload the screenshot of your payment:
+                    </p>
+
+                    {screenshotPreview ? (
+                      <div className="relative rounded-xl border border-slate-200 overflow-hidden bg-slate-50 p-2 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={screenshotPreview}
+                            alt="Payment Proof"
+                            className="w-12 h-12 object-cover rounded-lg border border-slate-200"
+                          />
+                          <div>
+                            <p className="text-xs font-bold text-slate-800 truncate max-w-[180px]">
+                              {screenshotFile?.name || 'payment_proof.jpg'}
+                            </p>
+                            <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3" /> Ready to submit
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setScreenshotFile(null);
+                            setScreenshotPreview(null);
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg cursor-pointer"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="w-full py-3 bg-[#1e293b] hover:bg-slate-900 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-xs">
+                        <Camera className="w-4 h-4" />
+                        <span>Select Screenshot</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+
+                    <div className="pt-2">
+                      <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                        UTR / UPI Transaction ID (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        placeholder="e.g. 423589102432"
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmittingProof || paymentSubmittedSuccess}
+                      className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs transition-all shadow-md active:scale-[0.98] cursor-pointer disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+                    >
+                      {isSubmittingProof ? (
+                        <span>Verifying Payment Proof...</span>
+                      ) : paymentSubmittedSuccess ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>Submitted! Unlocking Access...</span>
+                        </>
+                      ) : (
+                        <span>Submit Proof & Activate Access</span>
+                      )}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

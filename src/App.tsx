@@ -17,7 +17,7 @@ export default function App() {
   useEffect(() => {
     // Basic route detection that works locally and on GitHub Pages
     const path = window.location.pathname;
-    if (path === '/admin' || path === '/agamakizhiasacademy/admin' || path.endsWith('/admin')) {
+    if (path === '/admin' || path === '/ambedkariasacademy/admin' || path.endsWith('/admin')) {
       setView('admin-login');
     }
   }, []);

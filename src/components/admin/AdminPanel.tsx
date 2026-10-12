@@ -34,8 +34,10 @@ import {
   RotateCcw,
   RefreshCw,
   Library,
-  Download
+  Download,
+  Store
 } from 'lucide-react';
+import AdminStorePanel from './AdminStorePanel';
 import { db } from '../../lib/firebase';
 import {
   collection,
@@ -54,8 +56,6 @@ import { initialFullMockQuizzes } from '../../lib/quizData';
 import { downloadAdminResultsMasterPdf, downloadSingleResultPdf, download2026CalendarPlanPdf } from '../../lib/pdfReportGenerator';
 import { initial2026CalendarPlan, CalendarPlanItem, PlanType } from '../../lib/calendarPlan2026Data';
 import logoImage from '../../assets/images/regenerated_image_1790577966199.jpg';
-import AdminStorePanel from './AdminStorePanel';
-
 export type AdminTab = 'chapters' | 'syllabus' | 'questions' | 'results' | 'notifications' | 'store';
 
 // Helper to convert any video URL to embed format
@@ -129,19 +129,126 @@ export const EXAM_CATEGORIES = [
 ];
 
 const subjectOptions = [
-  { id: 'maths', name: 'Maths' },
+  { id: 'tamil', name: 'General Tamil' },
+  { id: 'english', name: 'General English' },
+  { id: 'aptitude', name: 'Aptitude' },
   { id: 'reasoning', name: 'Reasoning' },
+  { id: 'history-inm', name: 'History, Culture of India, and Indian National Movement' },
+  { id: 'economy-admin', name: 'Indian Economy and Development Administration in Tamil Nadu' },
+  { id: 'tn-heritage', name: 'History, Culture, Heritage, and Socio-Political Movements of Tamil Nadu' },
+  { id: 'polity', name: 'Indian Polity' },
+  { id: 'geography', name: 'Geography' },
   { id: 'physics', name: 'Physics' },
   { id: 'chemistry', name: 'Chemistry' },
   { id: 'biology', name: 'Biology' },
-  { id: 'history', name: 'History' },
-  { id: 'polity', name: 'Polity' },
-  { id: 'geography', name: 'Geography' },
+  { id: 'science', name: 'General Science' },
   { id: 'environment', name: 'Environment' },
-  { id: 'tamil', name: 'Tamil' },
-  { id: 'english', name: 'English' },
   { id: 'current-affairs', name: 'Current Affairs' },
 ];
+
+export const QUESTION_SUBJECT_CATEGORIES = [
+  'General Tamil',
+  'General English',
+  'Aptitude',
+  'Reasoning',
+  'History, Culture of India, and Indian National Movement',
+  'Indian Economy and Development Administration in Tamil Nadu',
+  'History, Culture, Heritage, and Socio-Political Movements of Tamil Nadu',
+  'General Studies',
+  'Indian Polity',
+  'Geography',
+  'General Science',
+  'Current Affairs'
+];
+
+export const GENERAL_SCIENCE_TOPICS = [
+  'Nature of Universe - Measurement of physical quantities',
+  'General scientific laws in motion - force, pressure, and energy',
+  'Everyday application of mechanics, electricity, magnetism, light, sound, heat, and nuclear physics',
+  'Elements and compounds, acids, bases, salts, petroleum products, fertilizers, pesticides, metallurgy, and food adulterants',
+  'Main concepts of life science, classification of living organisms, evolution, genetics, physiology',
+  'Nutrition, health and hygiene, human diseases',
+  'Environmental science',
+  'Latest inventions in science and technology',
+  'Current affairs'
+];
+
+export const SUBJECT_TOPIC_REGISTRY: Record<string, string[]> = {
+  'General Science': GENERAL_SCIENCE_TOPICS,
+  'General Tamil': [
+    'பகுதி-அ: இலக்கணம் (Grammar, பிரித்தெழுதுக, எதிர்ச்சொல்)',
+    'பகுதி-ஆ: இலக்கியம் (திருக்குறள், நாலடியார், எட்டுத்தொகை, பத்துப்பாட்டு)',
+    'பகுதி-இ: தமிழ் அறிஞர்களும் தமிழ்த் தொண்டும் (பாரதியார், பாரதிதாசன், பெரியார், அண்ணா)',
+    'அனைத்துப் பகுதிகள் மாதிரி வினாத்தாள் (Full Mock Test)'
+  ],
+  'General English': [
+    'Grammar & Parts of Speech',
+    'Synonyms, Antonyms & Vocabulary',
+    'Comprehension & Error Spotting',
+    'Figures of Speech & Literary Works'
+  ],
+  'Aptitude': [
+    'Simplification, BODMAS & Number Systems',
+    'Highest Common Factor (HCF) & Lowest Common Multiple (LCM)',
+    'Percentages, Profit, Loss & Discount',
+    'Ratio, Proportion & Partnership',
+    'Simple Interest & Compound Interest',
+    'Time and Work, Pipes & Cisterns',
+    'Time, Speed, Distance & Trains',
+    'Mensuration 2D & 3D (Area & Volume)',
+    'Data Interpretation, Graphs & Tabulation'
+  ],
+  'Reasoning': [
+    'Coding-Decoding & Letter-Number Series',
+    'Analogy & Odd One Out',
+    'Direction Sense & Distance Test',
+    'Blood Relations & Family Tree Analysis',
+    'Syllogism & Venn Diagrams',
+    'Seating Arrangements & Puzzles',
+    'Clocks, Calendars & Dice Logic'
+  ],
+  'History, Culture of India, and Indian National Movement': [
+    'Indus Valley Civilization & Vedic Age',
+    'Great Dynasties (Mauryas, Guptas, Delhi Sultanate, Mughals, Marathas)',
+    'Early Uprisings & The Great Revolt of 1857',
+    'Rise of Indian Nationalism (1885-1905)',
+    'Gandhian Era & Mass Movements (Non-Cooperation, Civil Disobedience, Quit India)',
+    'National Leaders & Freedom Fighters'
+  ],
+  'Indian Economy and Development Administration in Tamil Nadu': [
+    'Nature of Indian Economy & Five Year Plans',
+    'NITI Aayog, Planning & Economic Reforms',
+    'Public Finance, GST & Finance Commission',
+    'Tamil Nadu Economic Growth & Social Welfare Schemes',
+    'E-Governance, Education & Healthcare in Tamil Nadu'
+  ],
+  'History, Culture, Heritage, and Socio-Political Movements of Tamil Nadu': [
+    'History of Tamil Society, Archaeological Excavations (Keezhadi, Korkai)',
+    'Thirukkural - Secular Ethics & Universal Values',
+    'Early Resistance against British Rule (Velu Nachiyar, Puli Thevar, Kattabomman)',
+    'Dravidian Movement, Justice Party, Periyar E.V.R. & C.N. Annadurai'
+  ],
+  'Indian Polity': [
+    'Preamble, Salient Features & Sources of Constitution',
+    'Fundamental Rights, Fundamental Duties & DPSP',
+    'Union Executive & Parliament of India',
+    'State Government & State Legislature',
+    'Judiciary - Supreme Court & High Courts',
+    'Local Governance - Panchayati Raj & Municipalities'
+  ],
+  'Geography': [
+    'Physical Geography & Location of India',
+    'Monsoon, Rainfall, Weather & Climate',
+    'Water Resources, Rivers in India & Tamil Nadu',
+    'Soil, Minerals & Natural Resources',
+    'Transport, Communication & Disaster Management'
+  ],
+  'General Studies': [
+    'General Studies Paper 1 - Full Mock Test',
+    'General Studies Combined Revision',
+    'Current Affairs (State, National & International)'
+  ]
+};
 
 export interface ChapterModuleForm {
   examCategory?: string;
@@ -191,7 +298,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const [chapterModules, setChapterModules] = useState<Record<string, any>>({});
   const [notifications, setNotifications] = useState<any[]>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_calendar_plan_2026');
+      const local = localStorage.getItem('ambedkar_calendar_plan_2026');
       if (local) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -208,7 +315,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
   // 0. Chapter Learning Modules Form State (PDF chapter, video, practice test, study notes & key concepts)
   const [chapterForm, setChapterForm] = useState<ChapterModuleForm>(() => {
     try {
-      const savedModules = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+      const savedModules = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
       if (savedModules['TNPSC Group I_physics_ch_1']) {
         return savedModules['TNPSC Group I_physics_ch_1'];
       }
@@ -315,7 +422,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
   // Syllabus Management State
   const [syllabi, setSyllabi] = useState<Record<string, ExamSyllabusItem>>(() => {
-    const local = localStorage.getItem('agamakizh_exam_syllabi');
+    const local = localStorage.getItem('ambedkar_exam_syllabi');
     if (local) {
       try {
         return { ...initialSyllabi, ...JSON.parse(local) };
@@ -331,7 +438,8 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
   // 3. Question Tests Form (Interactive Question Test Builder)
   const [quizForm, setQuizForm] = useState({
     title: '',
-    category: 'TNPSC Group I',
+    category: 'General Science',
+    subject: 'Nature of Universe - Measurement of physical quantities',
     difficulty: 'Medium' as 'Easy' | 'Medium' | 'High',
     duration: '60 min',
     questionsCount: 1,
@@ -391,7 +499,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     setIsLoading(true);
     try {
       // 0. Load Chapter Modules
-      const localChapters = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+      const localChapters = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
       setChapterModules(localChapters);
 
       // Automatically sync active chapter form if saved in storage
@@ -401,7 +509,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       }
 
       if (activeTab === 'questions') {
-        const local = JSON.parse(localStorage.getItem('agamakizh_admin_quizzes') || 'null');
+        const local = JSON.parse(localStorage.getItem('ambedkar_admin_quizzes') || 'null');
         try {
           const snap = await getDocs(collection(db, 'quizzes'));
           const remote = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -414,38 +522,38 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
           setQuizzes(list);
         }
       } else if (activeTab === 'results') {
-        const local = JSON.parse(localStorage.getItem('agamakizh_admin_results') || 'null');
+        const local = JSON.parse(localStorage.getItem('ambedkar_admin_results') || 'null');
         try {
           const snap = await getDocs(collection(db, 'studentResults'));
           const remote = snap.docs.map(d => ({ id: d.id, ...d.data() }));
           const list = (remote.length > 0 ? remote : (local || []))
             .filter((r: any) => !['TNPSC Group I - Prelims Mock 1', 'SSC CGL - Quant Sectional', 'Railway RRB NTPC - Mock 4', 'TNPSC Group IV - Full Length', 'SSC CHSL - English Tier 1'].includes(r.exam || r.examName));
           setStudentResults(list);
-          safeLocalStorageSet('agamakizh_admin_results', list);
+          safeLocalStorageSet('ambedkar_admin_results', list);
         } catch {
           const list = (local || [])
             .filter((r: any) => !['TNPSC Group I - Prelims Mock 1', 'SSC CGL - Quant Sectional', 'Railway RRB NTPC - Mock 4', 'TNPSC Group IV - Full Length', 'SSC CHSL - English Tier 1'].includes(r.exam || r.examName));
           setStudentResults(list);
-          safeLocalStorageSet('agamakizh_admin_results', list);
+          safeLocalStorageSet('ambedkar_admin_results', list);
         }
       } else if (activeTab === 'notifications') {
-        const local = JSON.parse(localStorage.getItem('agamakizh_calendar_plan_2026') || 'null');
+        const local = JSON.parse(localStorage.getItem('ambedkar_calendar_plan_2026') || 'null');
         try {
           const q = query(collection(db, 'calendarPlans'), orderBy('date', 'asc'));
           const snap = await getDocs(q);
           const remote = snap.docs.map(d => ({ id: d.id, ...d.data() }));
           const list = remote.length > 0 ? remote : (local && local.length > 0 ? local : initial2026CalendarPlan);
           setNotifications(list);
-          safeLocalStorageSet('agamakizh_calendar_plan_2026', list);
+          safeLocalStorageSet('ambedkar_calendar_plan_2026', list);
         } catch {
           const list = local && local.length > 0 ? local : initial2026CalendarPlan;
           setNotifications(list);
-          safeLocalStorageSet('agamakizh_calendar_plan_2026', list);
+          safeLocalStorageSet('ambedkar_calendar_plan_2026', list);
         }
       }
 
       // 7. Load Exam Syllabi
-      const localSyllabi = localStorage.getItem('agamakizh_exam_syllabi');
+      const localSyllabi = localStorage.getItem('ambedkar_exam_syllabi');
       if (localSyllabi) {
         try {
           const parsed = JSON.parse(localSyllabi);
@@ -467,7 +575,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     setIsLoading(true);
     try {
       await fetchData();
-      const local = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+      const local = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
       const currentKey = `${chapterForm.subjectId}_ch_${chapterForm.chapterNumber}`;
       if (local[currentKey]) {
         let loaded = local[currentKey];
@@ -480,7 +588,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
         setChapterForm(loaded);
       }
 
-      const localSyllabi = localStorage.getItem('agamakizh_exam_syllabi');
+      const localSyllabi = localStorage.getItem('ambedkar_exam_syllabi');
       if (localSyllabi) {
         try {
           const parsed = JSON.parse(localSyllabi);
@@ -585,14 +693,14 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
         [selectedSyllabusExamId]: updatedForm
       };
       setSyllabi(updated);
-      safeLocalStorageSet('agamakizh_exam_syllabi', updated);
+      safeLocalStorageSet('ambedkar_exam_syllabi', updated);
 
       // Broadcast to student portal
-      window.dispatchEvent(new CustomEvent('agamakizh_syllabus_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_syllabus_updated', {
         detail: { examId: selectedSyllabusExamId, syllabus: updatedForm }
       }));
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'SYLLABUS_UPDATED', examId: selectedSyllabusExamId, syllabus: updatedForm });
       } catch { }
 
@@ -657,11 +765,105 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     const currentCat = cat || chapterForm.examCategory || 'TNPSC Group I';
     const specificKey = `${currentCat}_${newSubjectId}_ch_${newChapterNum}`;
     const genericKey = `${newSubjectId}_ch_${newChapterNum}`;
-    const local = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+    const local = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
     const existing = chapterModules[specificKey] || chapterModules[genericKey] || local[specificKey] || local[genericKey];
 
     if (existing) {
       setChapterForm({ ...existing, examCategory: currentCat });
+    } else if (newSubjectId === 'science' && newChapterNum === 1) {
+      setChapterForm(prev => ({
+        ...prev,
+        examCategory: currentCat,
+        subjectId: 'science',
+        chapterNumber: 1,
+        titleEn: 'Nature of Universe & Measurement of Quantities',
+        titleTa: 'பிரபஞ்சத்தின் இயல்பு மற்றும் இயற்பியல் அளவுகளின் அளவீடு',
+        duration: '50 mins',
+        summaryEn: 'Nature of Universe - Measurement of physical quantities - General scientific laws in motion - force, pressure, and energy - Everyday application of the basic principles of mechanics, electricity, magnetism, light, sound, heat, and nuclear physics in our daily life; Elements and compounds, acids, bases, salts, petroleum products, fertilizers, pesticides, metallurgy, and food adulterants; main concepts of life science, classification of living organisms, evolution, genetics, physiology, nutrition, health and hygiene, human diseases; Environmental science; Latest inventions in science and technology; Current affairs.',
+        summaryTa: 'பிரபஞ்சத்தின் இயல்பு - இயற்பியல் அளவுகளின் அளவீடு - இயக்கவியல் பொது அறிவியல் விதிகள் - விசை, அழுத்தம் மற்றும் ஆற்றல் - அன்றாட வாழ்வியல் பயன்பாடுகள்; தனிமங்கள், சேர்மங்கள், அமிலங்கள், காரங்கள், உப்புகள், பெட்ரோலிய பொருட்கள், உரங்கள், பூச்சிக்கொல்லிகள்; உயிரறிவியல், மனித நோய்கள், சுற்றுச்சூழல் அறிவியல் மற்றும் புதிய கண்டுபிடிப்புகள்.',
+        keyPoints: [
+          {
+            title: '1. Nature of Universe & Measurement of physical quantities',
+            desc: 'Origin of universe, celestial mechanics, solar system, SI Base and Derived Units, and dimensional analysis.',
+            titleTa: '1. பிரபஞ்சத்தின் இயல்பு மற்றும் இயற்பியல் அளவுகளின் அளவீடு',
+            descTa: 'அண்டத்தின் தோற்றம், சூரிய குடும்பம், அடிப்படை SI அலகுகள் மற்றும் பரிமாண வாய்ப்பாடுகள்.'
+          },
+          {
+            title: '2. General scientific laws in motion - force, pressure, and energy',
+            desc: 'Newton’s three laws of motion, inertia, momentum, gravitational laws, fluid mechanics (Pascal/Archimedes), work-energy theorem.',
+            titleTa: '2. இயக்கவியல் பொது அறிவியல் விதிகள் - விசை, அழுத்தம் மற்றும் ஆற்றல்',
+            descTa: 'நியூட்டனின் இயக்க விதிகள், நிலைமம், உந்தம், புவியீர்ப்பு, பாய்ம அழுத்தம் மற்றும் ஆற்றல் மாறாக் கோட்பாடு.'
+          },
+          {
+            title: '3. Everyday application of mechanics, electricity, magnetism, light, sound, heat & nuclear physics',
+            desc: 'Domestic electricity, magnetic induction, lenses & mirrors, wave optics, acoustics, heat engines, nuclear energy in daily life.',
+            titleTa: '3. அன்றாட வாழ்வியல் இயற்பியல் தத்துவங்களின் பயன்பாடுகள்',
+            descTa: 'மின்னோட்டம், காந்தவியல், ஒளிவிலகல், ஒலி அலைகள், வெப்பப் பரிமாற்றம் மற்றும் அணுக்கரு ஆற்றல்.'
+          },
+          {
+            title: '4. Elements and compounds, acids, bases, salts, petroleum, fertilizers, pesticides & metallurgy',
+            desc: 'Periodic table basics, acid-base neutralisation, chemical fertilizers (NPK), metallurgy, and food adulteration tests.',
+            titleTa: '4. தனிமங்கள், சேர்மங்கள், அமிலங்கள், காரங்கள், உப்புகள் & பயன்பாட்டு வேதியியல்',
+            descTa: 'அமிலங்கள்-காரங்கள் pH மதிப்பு, பெட்ரோலிய பொருட்கள், உரங்கள், பூச்சிக்கொல்லிகள் மற்றும் உணவு கலப்படம்.'
+          },
+          {
+            title: '5. Life science, classification, evolution, genetics, physiology, nutrition, health & human diseases',
+            desc: 'Organism classification, cell biology, DNA & heredity, human organ systems, vitamins deficiency, communicable & non-communicable diseases.',
+            titleTa: '5. உயிரறிவியல், வகைப்பாடு, மரபியல், உடலியங்கியல், ஊட்டச்சத்து & நோய்கள்',
+            descTa: 'உயிரினங்களின் வகைப்பாடு, செல் உயிரியல், மரபியல், மனித உறுப்பு மண்டலங்கள், ஊட்டச்சத்து மற்றும் நோய்கள்.'
+          },
+          {
+            title: '6. Environmental science, latest inventions in science & technology, and current affairs',
+            desc: 'Ecology, biodiversity conservation, renewable energy, AI, robotics, nanotechnology, ISRO & space missions.',
+            titleTa: '6. சுற்றுச்சூழல் அறிவியல், புதிய கண்டுபிடிப்புகள் & நடப்பு நிகழ்வுகள்',
+            descTa: 'சுற்றுச்சூழல் பாதுகாப்பு, புதுப்பிக்கத்தக்க ஆற்றல், இஸ்ரோ விண்வெளி திட்டங்கள், AI மற்றும் அறிவியல் நடப்பு நிகழ்வுகள்.'
+          }
+        ],
+        videoUrl: 'https://www.youtube.com/watch?v=zEaBIuPyL0w',
+        videoTitle: 'MISSION 100 | General Science Unit 1 | Nature of Universe & Complete Syllabus',
+        faculty: 'Dr. S. K. Raman',
+        quiz: [
+          {
+            question: 'Which of the following is the base SI unit of Thermodynamic Temperature?',
+            questionTa: 'வெப்ப இயக்கவியல் வெப்பநிலையின் (Thermodynamic Temperature) அடிப்படை SI அலகு எது?',
+            options: ['Celsius (°C)', 'Fahrenheit (°F)', 'Kelvin (K)', 'Joule (J)'],
+            optionsTa: ['செல்சியஸ் (°C)', 'பாரன்ஹீட் (°F)', 'கெல்வின் (K)', 'ஜூல் (J)'],
+            correct: 2,
+            explanation: 'Kelvin (K) is the SI base unit of thermodynamic temperature.',
+            explanationTa: 'வெப்ப இயக்கவியல் வெப்பநிலையின் அடிப்படை SI அலகு கெல்வின் (K) ஆகும்.'
+          },
+          {
+            question: 'Rocket propulsion is an application of which fundamental physical law?',
+            questionTa: 'ராக்கெட் ஏவுதல் எந்த அடிப்படை இயற்பியல் விதியின் பயன்பாடாகும்?',
+            options: ['Conservation of Linear Momentum', 'Bernoulli\'s Principle', 'Pascal\'s Law', 'Law of Universal Gravitation'],
+            optionsTa: ['நேர்க்கோட்டு உந்த மாறாக் கோட்பாடு', 'பெர்னௌலி தத்துவம்', 'பாஸ்கல் விதி', 'அகில ஈர்ப்பு விதி'],
+            correct: 0,
+            explanation: 'Rocket propulsion functions on Newton\'s third law and conservation of linear momentum.',
+            explanationTa: 'ராக்கெட் ஏவுதல் என்பது நியூட்டனின் மூன்றாம் விதி மற்றும் நேர்க்கோட்டு உந்த மாறாக் கோட்பாட்டின் அடிப்படையில் செயல்படுகிறது.'
+          },
+          {
+            question: 'What is the pH range of human blood in healthy condition?',
+            questionTa: 'ஆரோக்கியமான மனித இரத்தத்தின் pH வரம்பு என்ன?',
+            options: ['6.0 – 6.5', '7.35 – 7.45', '8.5 – 9.0', '5.0 – 5.5'],
+            optionsTa: ['6.0 – 6.5', '7.35 – 7.45 (லேசான காரத்தன்மை)', '8.5 – 9.0', '5.0 – 5.5'],
+            correct: 1,
+            explanation: 'Human arterial blood pH strictly stays within 7.35 to 7.45 (slightly alkaline).',
+            explanationTa: 'மனித இரத்தத்தின் pH மதிப்பு 7.35 முதல் 7.45 வரை இருக்கும் (சிறிது காரத்தன்மை).'
+          },
+          {
+            question: 'Deficiency of Vitamin C leads to which of the following diseases?',
+            questionTa: 'வைட்டமின் C குறைபாட்டினால் ஏற்படும் நோய் எது?',
+            options: ['Rickets', 'Beriberi', 'Scurvy', 'Night Blindness'],
+            optionsTa: ['ரிக்கெட்ஸ்', 'பெரிபெரி', 'ஸ்கர்வி (Scurvy)', 'மாலைக்கண் நோய்'],
+            correct: 2,
+            explanation: 'Vitamin C (Ascorbic acid) deficiency causes Scurvy, characterized by bleeding gums.',
+            explanationTa: 'வைட்டமின் C குறைபாட்டால் ஈறுகளில் ரத்தக்கசிவு ஏற்படும் ஸ்கர்வி நோய் உண்டாகிறது.'
+          }
+        ],
+        pdfUrl: '',
+        pdfFileName: '',
+        pdfTitle: 'General_Science_Nature_of_Universe_Complete_Notes.pdf'
+      }));
     } else {
       const subName = subjectOptions.find(s => s.id === newSubjectId)?.name || 'Subject';
       setChapterForm(prev => ({
@@ -741,14 +943,14 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       };
 
       setChapterModules(updated);
-      safeLocalStorageSet('agamakizh_chapter_modules', updated);
+      safeLocalStorageSet('ambedkar_chapter_modules', updated);
 
       // Broadcast and dispatch storage events so student portal reloads instantly
-      window.dispatchEvent(new CustomEvent('agamakizh_chapter_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_chapter_updated', {
         detail: { key, chapterForm: cleanedChapterForm }
       }));
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'CHAPTER_UPDATED', key, chapterForm: cleanedChapterForm });
       } catch { }
 
@@ -798,7 +1000,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
       const updated = [newEntry, ...studentResults];
       setStudentResults(updated);
-      safeLocalStorageSet('agamakizh_admin_results', updated);
+      safeLocalStorageSet('ambedkar_admin_results', updated);
 
       setResultForm(prev => ({
         ...prev,
@@ -843,14 +1045,14 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
         const updated = notifications.map(n => n.id === editingNotifId ? { ...n, ...updatedEntry } : n);
         setNotifications(updated);
-        safeLocalStorageSet('agamakizh_calendar_plan_2026', updated);
+        safeLocalStorageSet('ambedkar_calendar_plan_2026', updated);
 
         try {
-          const bc = new BroadcastChannel('agamakizh_channel');
+          const bc = new BroadcastChannel('ambedkar_channel');
           bc.postMessage({ type: 'CALENDAR_PLAN_UPDATED', plans: updated });
         } catch { }
 
-        window.dispatchEvent(new CustomEvent('agamakizh_calendar_plan_updated', {
+        window.dispatchEvent(new CustomEvent('ambedkar_calendar_plan_updated', {
           detail: { plans: updated }
         }));
 
@@ -886,14 +1088,14 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
         const updated = [newEntry, ...notifications];
         setNotifications(updated);
-        safeLocalStorageSet('agamakizh_calendar_plan_2026', updated);
+        safeLocalStorageSet('ambedkar_calendar_plan_2026', updated);
 
         try {
-          const bc = new BroadcastChannel('agamakizh_channel');
+          const bc = new BroadcastChannel('ambedkar_channel');
           bc.postMessage({ type: 'CALENDAR_PLAN_UPDATED', plans: updated });
         } catch { }
 
-        window.dispatchEvent(new CustomEvent('agamakizh_calendar_plan_updated', {
+        window.dispatchEvent(new CustomEvent('ambedkar_calendar_plan_updated', {
           detail: { plans: updated }
         }));
 
@@ -967,14 +1169,14 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     setIsSaving(true);
     try {
       setNotifications(initial2026CalendarPlan);
-      safeLocalStorageSet('agamakizh_calendar_plan_2026', initial2026CalendarPlan);
+      safeLocalStorageSet('ambedkar_calendar_plan_2026', initial2026CalendarPlan);
 
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'CALENDAR_PLAN_UPDATED', plans: initial2026CalendarPlan });
       } catch { }
 
-      window.dispatchEvent(new CustomEvent('agamakizh_calendar_plan_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_calendar_plan_updated', {
         detail: { plans: initial2026CalendarPlan }
       }));
 
@@ -998,14 +1200,14 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       }
 
       setNotifications([]);
-      safeLocalStorageSet('agamakizh_calendar_plan_2026', []);
+      safeLocalStorageSet('ambedkar_calendar_plan_2026', []);
 
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'CALENDAR_PLAN_UPDATED', plans: [] });
       } catch { }
 
-      window.dispatchEvent(new CustomEvent('agamakizh_calendar_plan_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_calendar_plan_updated', {
         detail: { plans: [] }
       }));
 
@@ -1064,7 +1266,8 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
     setQuizForm({
       title: quiz.title || '',
-      category: quiz.category || 'TNPSC Group I',
+      category: quiz.category || 'General Science',
+      subject: quiz.subject || (SUBJECT_TOPIC_REGISTRY[quiz.category] ? SUBJECT_TOPIC_REGISTRY[quiz.category][0] : 'Nature of Universe - Measurement of physical quantities'),
       difficulty: (quiz.difficulty as 'Easy' | 'Medium' | 'High') || 'Medium',
       duration: quiz.duration ? String(quiz.duration).replace(' min', '') : '60',
       questionsCount: mappedQuestions.length,
@@ -1083,7 +1286,8 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     setEditingQuizId(null);
     setQuizForm({
       title: '',
-      category: 'TNPSC Group I',
+      category: 'General Science',
+      subject: 'Nature of Universe - Measurement of physical quantities',
       difficulty: 'Medium',
       duration: '60 min',
       questionsCount: 1,
@@ -1111,6 +1315,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
     const durationNum = parseInt(quizForm.duration) || 60;
     const questionsList = quizForm.questions.map((q, idx) => ({
       id: idx + 1,
+      subject: quizForm.subject,
       textEn: q.textEn || `Question ${idx + 1}`,
       textTa: q.textTa || q.textEn || `வினா ${idx + 1}`,
       optionsEn: q.optionsEn.map((opt, oIdx) => opt || `Option ${String.fromCharCode(65 + oIdx)}`),
@@ -1126,6 +1331,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
         id: editingQuizId,
         title: quizForm.title,
         category: quizForm.category,
+        subject: quizForm.subject || quizForm.category,
         difficulty: quizForm.difficulty,
         duration: quizForm.duration.includes('min') ? quizForm.duration : `${quizForm.duration} min`,
         durationSeconds: durationNum * 60,
@@ -1144,21 +1350,22 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
         const updated = quizzes.map(q => q.id === editingQuizId ? { ...q, ...updatedEntry } : q);
         setQuizzes(updated);
-        safeLocalStorageSet('agamakizh_admin_quizzes', updated);
+        safeLocalStorageSet('ambedkar_admin_quizzes', updated);
 
         // Realtime broadcast to student portal
-        window.dispatchEvent(new CustomEvent('agamakizh_quizzes_updated', {
+        window.dispatchEvent(new CustomEvent('ambedkar_quizzes_updated', {
           detail: { quizzes: updated }
         }));
         try {
-          const bc = new BroadcastChannel('agamakizh_channel');
+          const bc = new BroadcastChannel('ambedkar_channel');
           bc.postMessage({ type: 'QUIZZES_UPDATED', quizzes: updated });
         } catch { }
 
         setEditingQuizId(null);
         setQuizForm({
           title: '',
-          category: 'TNPSC Group I',
+          category: 'General Science',
+          subject: 'Nature of Universe - Measurement of physical quantities',
           difficulty: 'Medium',
           duration: '60 min',
           questionsCount: 1,
@@ -1184,6 +1391,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       id: `quiz-${Date.now()}`,
       title: quizForm.title,
       category: quizForm.category,
+      subject: quizForm.subject || quizForm.category,
       difficulty: quizForm.difficulty,
       duration: quizForm.duration.includes('min') ? quizForm.duration : `${quizForm.duration} min`,
       durationSeconds: durationNum * 60,
@@ -1203,20 +1411,21 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
       const updated = [newEntry, ...quizzes];
       setQuizzes(updated);
-      safeLocalStorageSet('agamakizh_admin_quizzes', updated);
+      safeLocalStorageSet('ambedkar_admin_quizzes', updated);
 
       // Realtime broadcast to student portal
-      window.dispatchEvent(new CustomEvent('agamakizh_quizzes_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_quizzes_updated', {
         detail: { quizzes: updated }
       }));
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'QUIZZES_UPDATED', quizzes: updated });
       } catch { }
 
       setQuizForm({
         title: '',
-        category: 'TNPSC Group I',
+        category: 'General Science',
+        subject: 'Nature of Universe - Measurement of physical quantities',
         difficulty: 'Medium',
         duration: '60 min',
         questionsCount: 1,
@@ -1250,20 +1459,20 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       if (tab === 'results') {
         const filtered = studentResults.filter(item => item.id !== id);
         setStudentResults(filtered);
-        safeLocalStorageSet('agamakizh_admin_results', filtered);
-        window.dispatchEvent(new CustomEvent('agamakizh_results_updated', {
+        safeLocalStorageSet('ambedkar_admin_results', filtered);
+        window.dispatchEvent(new CustomEvent('ambedkar_results_updated', {
           detail: { studentResults: filtered }
         }));
         try {
-          const bc = new BroadcastChannel('agamakizh_channel');
+          const bc = new BroadcastChannel('ambedkar_channel');
           bc.postMessage({ type: 'RESULTS_UPDATED', studentResults: filtered });
         } catch { }
       } else if (tab === 'notifications') {
         const filtered = notifications.filter(item => item.id !== id);
         setNotifications(filtered);
-        safeLocalStorageSet('agamakizh_calendar_plan_2026', filtered);
+        safeLocalStorageSet('ambedkar_calendar_plan_2026', filtered);
         try {
-          const bc = new BroadcastChannel('agamakizh_channel');
+          const bc = new BroadcastChannel('ambedkar_channel');
           bc.postMessage({ type: 'CALENDAR_PLAN_UPDATED', plans: filtered });
         } catch { }
       } else if (tab === 'questions') {
@@ -1272,12 +1481,12 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
         }
         const filtered = quizzes.filter(item => item.id !== id);
         setQuizzes(filtered);
-        safeLocalStorageSet('agamakizh_admin_quizzes', filtered);
-        window.dispatchEvent(new CustomEvent('agamakizh_quizzes_updated', {
+        safeLocalStorageSet('ambedkar_admin_quizzes', filtered);
+        window.dispatchEvent(new CustomEvent('ambedkar_quizzes_updated', {
           detail: { quizzes: filtered }
         }));
         try {
-          const bc = new BroadcastChannel('agamakizh_channel');
+          const bc = new BroadcastChannel('ambedkar_channel');
           bc.postMessage({ type: 'QUIZZES_UPDATED', quizzes: filtered });
         } catch { }
       }
@@ -1302,13 +1511,13 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       }
 
       setQuizzes([]);
-      safeLocalStorageSet('agamakizh_admin_quizzes', []);
+      safeLocalStorageSet('ambedkar_admin_quizzes', []);
 
-      window.dispatchEvent(new CustomEvent('agamakizh_quizzes_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_quizzes_updated', {
         detail: { quizzes: [] }
       }));
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'QUIZZES_UPDATED', quizzes: [] });
       } catch { }
 
@@ -1333,13 +1542,13 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
       }
 
       setStudentResults([]);
-      safeLocalStorageSet('agamakizh_admin_results', []);
+      safeLocalStorageSet('ambedkar_admin_results', []);
 
-      window.dispatchEvent(new CustomEvent('agamakizh_results_updated', {
+      window.dispatchEvent(new CustomEvent('ambedkar_results_updated', {
         detail: { studentResults: [] }
       }));
       try {
-        const bc = new BroadcastChannel('agamakizh_channel');
+        const bc = new BroadcastChannel('ambedkar_channel');
         bc.postMessage({ type: 'RESULTS_UPDATED', studentResults: [] });
       } catch { }
 
@@ -1378,7 +1587,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h1 className="font-black text-white text-base tracking-tight leading-none">Agamakizh</h1>
+              <h1 className="font-black text-white text-base tracking-tight leading-none">Ambedkar</h1>
               <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-1 block">Admin Console</span>
             </div>
           </div>
@@ -1426,10 +1635,10 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               onClick={() => { setActiveTab('notifications'); setSearchTerm(''); }}
             />
             <AdminSidebarLink
-              icon={<BookOpen className="h-4 w-4 text-orange-400" />}
-              label="Store Books Manager"
+              icon={<Store className="h-4 w-4 text-amber-400" />}
+              label="Premium Store Packages"
               active={activeTab === 'store'}
-              badge="New"
+              badge="Store"
               onClick={() => { setActiveTab('store'); setSearchTerm(''); }}
             />
           </nav>
@@ -1439,29 +1648,29 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
           <p className="text-[9px] font-bold uppercase tracking-wider text-slate-500 mb-2">Academy Channels</p>
           <div className="grid grid-cols-4 gap-1.5">
             <a
-              href="https://www.youtube.com/@agamakizhiasacademy"
+              href="https://www.youtube.com/@ambedkariasacademy"
               target="_blank"
               rel="noopener noreferrer"
               className="h-7 rounded-lg bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
-              title="YouTube (@agamakizhiasacademy)"
+              title="YouTube (@ambedkariasacademy)"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
             </a>
             <a
-              href="https://www.instagram.com/agamakizh_ias_academy"
+              href="https://www.instagram.com/ambedkar_ias_academy"
               target="_blank"
               rel="noopener noreferrer"
               className="h-7 rounded-lg bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
-              title="Instagram (@agamakizh_ias_academy)"
+              title="Instagram (@ambedkar_ias_academy)"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
             </a>
             <a
-              href="https://whatsapp.com/channel/0029VaAgamakizh"
+              href="https://whatsapp.com/channel/0029VaAmbedkar"
               target="_blank"
               rel="noopener noreferrer"
               className="h-7 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
@@ -1472,11 +1681,11 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               </svg>
             </a>
             <a
-              href="https://t.me/AgamakizhIAS"
+              href="https://t.me/AmbedkarIAS"
               target="_blank"
               rel="noopener noreferrer"
               className="h-7 rounded-lg bg-slate-800 hover:bg-sky-500 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer"
-              title="Telegram (@AgamakizhIAS)"
+              title="Telegram (@AmbedkarIAS)"
             >
               <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.197 1.006.128.832.942z"/>
@@ -1495,7 +1704,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
           </button>
           <button
             onClick={() => {
-              localStorage.removeItem('agamakizh_admin_session');
+              localStorage.removeItem('ambedkar_admin_session');
               onLogout();
             }}
             className="flex items-center gap-3 text-red-400 hover:text-red-300 transition-colors text-xs font-semibold w-full px-4 py-2.5 rounded-xl hover:bg-red-500/10 cursor-pointer"
@@ -1517,7 +1726,6 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               {activeTab === 'questions' && <><HelpCircle className="h-5 w-5 text-emerald-600" /> Question Tests & Assessment Builder</>}
               {activeTab === 'results' && <><Award className="h-5 w-5 text-amber-500" /> Student Results & Marks Management</>}
               {activeTab === 'notifications' && <><Calendar className="h-5 w-5 text-purple-600" /> Calendar & Plans 2026 Management</>}
-              {activeTab === 'store' && <><BookOpen className="h-5 w-5 text-orange-500" /> Store Books Management</>}
             </h2>
           </div>
 
@@ -1586,7 +1794,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                       <button
                         type="button"
                         onClick={() => {
-                          const local = JSON.parse(localStorage.getItem('agamakizh_chapter_modules') || '{}');
+                          const local = JSON.parse(localStorage.getItem('ambedkar_chapter_modules') || '{}');
                           const specKey = `${chapterForm.examCategory || 'TNPSC Group I'}_${chapterForm.subjectId}_ch_${chapterForm.chapterNumber}`;
                           const genKey = `${chapterForm.subjectId}_ch_${chapterForm.chapterNumber}`;
                           const data = local[specKey] || local[genKey];
@@ -2601,9 +2809,16 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                           onChange={e => setResultForm({ ...resultForm, category: e.target.value })}
                           className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none"
                         >
-                          {EXAM_CATEGORIES.map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
+                          <optgroup label="Exam Categories">
+                            {EXAM_CATEGORIES.map(cat => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </optgroup>
+                          <optgroup label="Subjects & TNPSC Units">
+                            {QUESTION_SUBJECT_CATEGORIES.map(subject => (
+                              <option key={subject} value={subject}>{subject}</option>
+                            ))}
+                          </optgroup>
                         </select>
                       </div>
 
@@ -2822,9 +3037,9 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
             {/* TAB 5: QUESTION TESTS & ASSESSMENT BUILDER */}
             {activeTab === 'questions' && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Form */}
-                <div id="question-test-builder" className="lg:col-span-7 bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+              <div className="space-y-8">
+                {/* Form: Full Width at Top */}
+                <div id="question-test-builder" className="w-full bg-white p-7 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div>
                       <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
@@ -2879,24 +3094,54 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                         />
                       </div>
 
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Category</label>
                           <select
                             value={quizForm.category}
-                            onChange={e => setQuizForm({ ...quizForm, category: e.target.value })}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-3 text-sm focus:outline-none"
+                            onChange={e => {
+                              const newCat = e.target.value;
+                              const availableTopics = SUBJECT_TOPIC_REGISTRY[newCat] || GENERAL_SCIENCE_TOPICS;
+                              setQuizForm({
+                                ...quizForm,
+                                category: newCat,
+                                subject: availableTopics[0] || 'All Units / Full Syllabus'
+                              });
+                            }}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-3 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 truncate"
                           >
-                            {EXAM_CATEGORIES.map(cat => (
-                              <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                            <option>General Studies</option>
-                            <option>Indian Polity</option>
-                            <option>History & Culture</option>
-                            <option>Geography</option>
-                            <option>General Science</option>
+                            <optgroup label="Subjects & TNPSC Units">
+                              {QUESTION_SUBJECT_CATEGORIES.map(subject => (
+                                <option key={subject} value={subject}>{subject}</option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Exam Categories">
+                              {EXAM_CATEGORIES.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                              ))}
+                            </optgroup>
                           </select>
                         </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-between">
+                            <span>Subject / Topic Option</span>
+                            <span className="text-emerald-600 font-bold text-[9px] lowercase">
+                              ({(SUBJECT_TOPIC_REGISTRY[quizForm.category] || GENERAL_SCIENCE_TOPICS).length} options)
+                            </span>
+                          </label>
+                          <select
+                            value={quizForm.subject}
+                            onChange={e => setQuizForm({ ...quizForm, subject: e.target.value })}
+                            className="w-full bg-emerald-50/70 border border-emerald-300 rounded-xl px-2.5 py-3 text-xs sm:text-sm font-semibold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 truncate"
+                          >
+                            {(SUBJECT_TOPIC_REGISTRY[quizForm.category] || GENERAL_SCIENCE_TOPICS).map((topic, tIdx) => (
+                              <option key={tIdx} value={topic}>{topic}</option>
+                            ))}
+                            <option value="All Units / Comprehensive Mock">All Units / Comprehensive Mock</option>
+                          </select>
+                        </div>
+
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Difficulty</label>
                           <select
@@ -2909,6 +3154,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                             <option value="High">High</option>
                           </select>
                         </div>
+
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Duration</label>
                           <input
@@ -3118,9 +3364,9 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                   </form>
                 </div>
 
-                {/* Right Column: Published Question Tests */}
-                <div className="lg:col-span-5 bg-white p-7 rounded-3xl border border-slate-200 shadow-sm flex flex-col">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-slate-100 pb-4">
+                {/* Bottom Section: Published Question Tests */}
+                <div className="w-full bg-white p-7 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                     <div>
                       <h3 className="font-bold text-slate-900 text-base">Published Question Tests</h3>
                       <p className="text-xs text-slate-400 mt-0.5">{quizzes.length} live interactive tests</p>
@@ -3144,13 +3390,13 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                           placeholder="Search tests..."
                           value={searchTerm}
                           onChange={e => setSearchTerm(e.target.value)}
-                          className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 w-full sm:w-36"
+                          className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/20 w-full sm:w-48"
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto space-y-3 max-h-[640px] pr-1">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5">
                     {filteredQuizzes.map(quiz => {
                       const isEditingThis = editingQuizId === quiz.id;
                       return (
@@ -3181,6 +3427,11 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                                 <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60 uppercase">
                                   {quiz.category}
                                 </span>
+                                {quiz.subject && quiz.subject !== quiz.category && (
+                                  <span className="text-[10px] font-medium text-emerald-800 bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200/50 truncate max-w-[170px]" title={quiz.subject}>
+                                    {quiz.subject}
+                                  </span>
+                                )}
                                 <span className="text-[10px] text-slate-600 bg-white border border-slate-200 px-1.5 py-0.5 rounded font-bold">
                                   {quiz.questionsCount || quiz.questions?.length || quiz.questions || (quiz.questionsList?.length || 0)} Qs
                                 </span>
@@ -3240,10 +3491,10 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                     })}
 
                     {filteredQuizzes.length === 0 && (
-                      <div className="text-center py-16 text-slate-400">
+                      <div className="col-span-full text-center py-16 text-slate-400">
                         <HelpCircle className="h-10 w-10 mx-auto mb-2 opacity-20" />
                         <p className="text-xs font-bold uppercase tracking-wider">No tests found</p>
-                        <p className="text-[11px] text-slate-400 mt-1">Create and publish interactive question tests using the form on the left.</p>
+                        <p className="text-[11px] text-slate-400 mt-1">Create and publish interactive question tests using the form above.</p>
                       </div>
                     )}
                   </div>
@@ -3330,7 +3581,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                   <div className="flex items-center gap-2.5 flex-wrap">
                     <button
                       type="button"
-                      onClick={() => download2026CalendarPlanPdf(notifications, 'Agamakizh Official 2026 Academic Plan')}
+                      onClick={() => download2026CalendarPlanPdf(notifications, 'Ambedkar Official 2026 Academic Plan')}
                       className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
                       title="Download full 2026 study planner in A4 PDF format"
                     >
@@ -3342,7 +3593,7 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
                       type="button"
                       onClick={handleResetCalendarPlans}
                       className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-2xs active:scale-95"
-                      title="Sync and restore all 47 official Agamakizh 2026 milestones"
+                      title="Sync and restore all 47 official Ambedkar 2026 milestones"
                     >
                       <RefreshCw className="h-3.5 w-3.5 text-emerald-600" />
                       <span>Sync 47 Official Plans</span>
@@ -3753,15 +4004,12 @@ export default function AdminPanel({ onLogout }: { onLogout: () => void }) {
               </div>
             )}
 
+            {activeTab === 'store' && (
+              <AdminStorePanel />
+            )}
+
           </div>
         </div>
-        
-        {/* TAB 7: STORE BOOKS MANAGEMENT */}
-        {activeTab === 'store' && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <AdminStorePanel />
-          </div>
-        )}
       </main>
 
       {/* Question Test Interactive Preview Modal */}

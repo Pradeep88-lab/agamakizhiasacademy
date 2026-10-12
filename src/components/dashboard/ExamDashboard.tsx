@@ -82,6 +82,7 @@ import { initialQuestionPapers, QuestionPaperItem } from '../../lib/questionPape
 import { initial2026CalendarPlan, CalendarPlanItem, PlanType, PlanStatus } from '../../lib/calendarPlan2026Data';
 import SubjectChapterView from './SubjectChapterView';
 import StoreView from './StoreView';
+import CourseCurriculumView from './CourseCurriculumView';
 import { downloadStudentMarksPdf, downloadSingleResultPdf, download2026CalendarPlanPdf } from '../../lib/pdfReportGenerator';
 
 const exams = [
@@ -128,12 +129,12 @@ const subjects = [
 export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [language, setLanguage] = useState<'english' | 'tamil'>(() => {
-    return (localStorage.getItem('agamakizh_study_medium') as 'english' | 'tamil') || 'english';
+    return (localStorage.getItem('ambedkar_study_medium') as 'english' | 'tamil') || 'english';
   });
 
   const toggleLanguage = (lang: 'english' | 'tamil') => {
     setLanguage(lang);
-    localStorage.setItem('agamakizh_study_medium', lang);
+    localStorage.setItem('ambedkar_study_medium', lang);
   };
   const [activeTab, setActiveTab] = useState('all');
   const [selectedExam, setSelectedExam] = useState<typeof exams[0] | null>(null);
@@ -141,10 +142,11 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [selectedResult, setSelectedResult] = useState<any | null>(null);
   const [selectedAnalysisQuestion, setSelectedAnalysisQuestion] = useState<number | null>(null);
+  const [selectedCourseCurriculum, setSelectedCourseCurriculum] = useState<any | null>(null);
   const [currentView, setCurrentView] = useState<'dashboard' | 'calendar' | 'quiz' | 'marks' | 'settings' | 'store'>('dashboard');
   const [userProfile, setUserProfile] = useState(() => {
     try {
-      const saved = localStorage.getItem('agamakizh_student_session');
+      const saved = localStorage.getItem('ambedkar_student_session');
       if (saved) {
         const parsed = JSON.parse(saved);
         return {
@@ -162,7 +164,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   });
   const [dynamicQuizzes, setDynamicQuizzes] = useState<any[]>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_admin_quizzes');
+      const local = localStorage.getItem('ambedkar_admin_quizzes');
       if (local) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed)) {
@@ -174,7 +176,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   });
   const [questionPapers, setQuestionPapers] = useState<QuestionPaperItem[]>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_admin_papers');
+      const local = localStorage.getItem('ambedkar_admin_papers');
       if (local !== null) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed)) return parsed;
@@ -202,7 +204,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   // 2026 Academic Calendar & Comprehensive Study Plan State
   const [calendarPlans, setCalendarPlans] = useState<CalendarPlanItem[]>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_calendar_plan_2026');
+      const local = localStorage.getItem('ambedkar_calendar_plan_2026');
       if (local) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -222,7 +224,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const [selectedPlanModal, setSelectedPlanModal] = useState<CalendarPlanItem | null>(null);
   const [completedPlanIds, setCompletedPlanIds] = useState<string[]>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_completed_calendar_items');
+      const local = localStorage.getItem('ambedkar_completed_calendar_items');
       if (local) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed)) return parsed;
@@ -237,13 +239,13 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
       ? completedPlanIds.filter(i => i !== strId)
       : [...completedPlanIds, strId];
     setCompletedPlanIds(updated);
-    safeLocalStorageSet('agamakizh_completed_calendar_items', updated);
+    safeLocalStorageSet('ambedkar_completed_calendar_items', updated);
   };
 
   const [dynamicNotifs, setDynamicNotifs] = useState<any[]>(notifications);
   const [dynamicStudy, setDynamicStudy] = useState<any[]>(() => {
     try {
-      const localStudy = localStorage.getItem('agamakizh_admin_study');
+      const localStudy = localStorage.getItem('ambedkar_admin_study');
       if (localStudy) {
         const parsed = JSON.parse(localStudy);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -258,14 +260,14 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   });
   const [dynamicResults, setDynamicResults] = useState<any[]>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_admin_results');
+      const local = localStorage.getItem('ambedkar_admin_results');
       if (local) {
         const parsed = JSON.parse(local);
         if (Array.isArray(parsed)) {
           const filtered = parsed.filter((r: any) =>
             !['TNPSC Group I - Prelims Mock 1', 'SSC CGL - Quant Sectional', 'Railway RRB NTPC - Mock 4', 'TNPSC Group IV - Full Length', 'SSC CHSL - English Tier 1'].includes(r.exam || r.examName)
           );
-          safeLocalStorageSet('agamakizh_admin_results', filtered);
+          safeLocalStorageSet('ambedkar_admin_results', filtered);
           return filtered;
         }
       }
@@ -276,7 +278,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   // Syllabi Management State
   const [syllabi, setSyllabi] = useState<Record<string, ExamSyllabusItem>>(() => {
     try {
-      const local = localStorage.getItem('agamakizh_exam_syllabi');
+      const local = localStorage.getItem('ambedkar_exam_syllabi');
       if (local) return { ...initialSyllabi, ...JSON.parse(local) };
     } catch { }
     return initialSyllabi;
@@ -288,12 +290,12 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const handleSyncStudyAndSyllabus = async () => {
     setIsStudySyncing(true);
     try {
-      const localStudy = localStorage.getItem('agamakizh_admin_study');
+      const localStudy = localStorage.getItem('ambedkar_admin_study');
       if (localStudy) {
         const parsed = JSON.parse(localStudy);
         if (Array.isArray(parsed) && parsed.length > 0) setDynamicStudy(parsed);
       }
-      const localSyllabi = localStorage.getItem('agamakizh_exam_syllabi');
+      const localSyllabi = localStorage.getItem('ambedkar_exam_syllabi');
       if (localSyllabi) {
         setSyllabi(prev => ({ ...prev, ...JSON.parse(localSyllabi) }));
       }
@@ -307,12 +309,12 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   useEffect(() => {
     const handleStorageSync = () => {
       try {
-        const localStudy = localStorage.getItem('agamakizh_admin_study');
+        const localStudy = localStorage.getItem('ambedkar_admin_study');
         if (localStudy) {
           const parsed = JSON.parse(localStudy);
           if (Array.isArray(parsed) && parsed.length > 0) setDynamicStudy(parsed);
         }
-        const localSyllabi = localStorage.getItem('agamakizh_exam_syllabi');
+        const localSyllabi = localStorage.getItem('ambedkar_exam_syllabi');
         if (localSyllabi) setSyllabi(prev => ({ ...prev, ...JSON.parse(localSyllabi) }));
       } catch (e) {
         console.warn('Storage sync error:', e);
@@ -321,7 +323,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
     const handlePapersSync = () => {
       try {
-        const local = localStorage.getItem('agamakizh_admin_papers');
+        const local = localStorage.getItem('ambedkar_admin_papers');
         if (local) {
           const parsed = JSON.parse(local);
           if (Array.isArray(parsed)) setQuestionPapers(parsed);
@@ -333,7 +335,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
     const handleQuizzesSync = () => {
       try {
-        const local = localStorage.getItem('agamakizh_admin_quizzes');
+        const local = localStorage.getItem('ambedkar_admin_quizzes');
         if (local) {
           const parsed = JSON.parse(local);
           if (Array.isArray(parsed)) {
@@ -360,16 +362,16 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
     };
 
     window.addEventListener('storage', handleStorageSync);
-    window.addEventListener('agamakizh_study_updated', handleStorageSync);
-    window.addEventListener('agamakizh_syllabus_updated', handleStorageSync);
-    window.addEventListener('agamakizh_papers_updated', handlePapersSync);
-    window.addEventListener('agamakizh_quizzes_updated', handleQuizzesSync);
-    window.addEventListener('agamakizh_results_updated', handleResultsSync);
-    window.addEventListener('agamakizh_calendar_plan_updated', handleCalendarSync);
+    window.addEventListener('ambedkar_study_updated', handleStorageSync);
+    window.addEventListener('ambedkar_syllabus_updated', handleStorageSync);
+    window.addEventListener('ambedkar_papers_updated', handlePapersSync);
+    window.addEventListener('ambedkar_quizzes_updated', handleQuizzesSync);
+    window.addEventListener('ambedkar_results_updated', handleResultsSync);
+    window.addEventListener('ambedkar_calendar_plan_updated', handleCalendarSync);
 
     let bc: BroadcastChannel | null = null;
     try {
-      bc = new BroadcastChannel('agamakizh_channel');
+      bc = new BroadcastChannel('ambedkar_channel');
       bc.onmessage = (msg) => {
         if (msg.data?.type === 'STUDY_UPDATED' && msg.data.studyMaterials) {
           setDynamicStudy(msg.data.studyMaterials);
@@ -395,25 +397,39 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           if (!pSnap.empty) {
             setQuestionPapers(pSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as QuestionPaperItem)));
           } else {
-            const localPapers = localStorage.getItem('agamakizh_admin_papers');
+            const localPapers = localStorage.getItem('ambedkar_admin_papers');
             if (localPapers !== null) {
               const parsed = JSON.parse(localPapers);
               if (Array.isArray(parsed)) setQuestionPapers(parsed);
             }
           }
         } catch {
-          const localPapers = localStorage.getItem('agamakizh_admin_papers');
+          const localPapers = localStorage.getItem('ambedkar_admin_papers');
           if (localPapers !== null) {
             const parsed = JSON.parse(localPapers);
             if (Array.isArray(parsed)) setQuestionPapers(parsed);
           }
         }
 
-        const qSnap = await getDocs(collection(db, 'quizzes'));
-        if (!qSnap.empty) {
-          setDynamicQuizzes(qSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((q: any) => q.id !== 1 && q.id !== 2 && q.id !== 3 && q.id !== 4 && q.id !== 5 && !['TNPSC Group I - Full Length Mock', 'SSC CGL Tier 1 - Mock Test 01', 'Railway RRB NTPC - Mock Test', 'Indian Polity - Fundamentals', 'Physics - Mechanics & Motion'].includes(q.title)));
-        } else {
-          const localQuizzes = localStorage.getItem('agamakizh_admin_quizzes');
+        try {
+          const qSnap = await getDocs(collection(db, 'quizzes'));
+          if (!qSnap.empty) {
+            setDynamicQuizzes(qSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((q: any) => q.id !== 1 && q.id !== 2 && q.id !== 3 && q.id !== 4 && q.id !== 5 && !['TNPSC Group I - Full Length Mock', 'SSC CGL Tier 1 - Mock Test 01', 'Railway RRB NTPC - Mock Test', 'Indian Polity - Fundamentals', 'Physics - Mechanics & Motion'].includes(q.title)));
+          } else {
+            const localQuizzes = localStorage.getItem('ambedkar_admin_quizzes');
+            if (localQuizzes) {
+              try {
+                const parsed = JSON.parse(localQuizzes);
+                if (Array.isArray(parsed)) {
+                  setDynamicQuizzes(parsed.filter((q: any) => q.id !== 1 && q.id !== 2 && q.id !== 3 && q.id !== 4 && q.id !== 5 && !['TNPSC Group I - Full Length Mock', 'SSC CGL Tier 1 - Mock Test 01', 'Railway RRB NTPC - Mock Test', 'Indian Polity - Fundamentals', 'Physics - Mechanics & Motion'].includes(q.title)));
+                }
+              } catch { }
+            } else {
+              setDynamicQuizzes([]);
+            }
+          }
+        } catch (e) {
+          const localQuizzes = localStorage.getItem('ambedkar_admin_quizzes');
           if (localQuizzes) {
             try {
               const parsed = JSON.parse(localQuizzes);
@@ -421,8 +437,6 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                 setDynamicQuizzes(parsed.filter((q: any) => q.id !== 1 && q.id !== 2 && q.id !== 3 && q.id !== 4 && q.id !== 5 && !['TNPSC Group I - Full Length Mock', 'SSC CGL Tier 1 - Mock Test 01', 'Railway RRB NTPC - Mock Test', 'Indian Polity - Fundamentals', 'Physics - Mechanics & Motion'].includes(q.title)));
               }
             } catch { }
-          } else {
-            setDynamicQuizzes([]);
           }
         }
 
@@ -432,16 +446,16 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           if (!cpSnap.empty) {
             const remotePlans = cpSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as CalendarPlanItem[];
             setCalendarPlans(remotePlans);
-            safeLocalStorageSet('agamakizh_calendar_plan_2026', remotePlans);
+            safeLocalStorageSet('ambedkar_calendar_plan_2026', remotePlans);
           } else {
-            const localPlans = localStorage.getItem('agamakizh_calendar_plan_2026');
+            const localPlans = localStorage.getItem('ambedkar_calendar_plan_2026');
             if (localPlans) {
               const parsed = JSON.parse(localPlans);
               if (Array.isArray(parsed) && parsed.length > 0) setCalendarPlans(parsed);
             }
           }
         } catch {
-          const localPlans = localStorage.getItem('agamakizh_calendar_plan_2026');
+          const localPlans = localStorage.getItem('ambedkar_calendar_plan_2026');
           if (localPlans) {
             try {
               const parsed = JSON.parse(localPlans);
@@ -450,16 +464,23 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           }
         }
 
-        const nSnap = await getDocs(query(collection(db, 'notifications'), orderBy('date', 'desc')));
-        if (!nSnap.empty) {
-          setDynamicNotifs([...notifications, ...nSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }))]);
-        }
+        try {
+          const nSnap = await getDocs(query(collection(db, 'notifications'), orderBy('date', 'desc')));
+          if (!nSnap.empty) {
+            setDynamicNotifs([...notifications, ...nSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }))]);
+          }
+        } catch (e) { }
 
-        const sSnap = await getDocs(collection(db, 'studyMaterials'));
-        if (!sSnap.empty) {
-          setDynamicStudy(sSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        } else {
-          const localStudy = localStorage.getItem('agamakizh_admin_study');
+        try {
+          const sSnap = await getDocs(collection(db, 'studyMaterials'));
+          if (!sSnap.empty) {
+            setDynamicStudy(sSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+          } else {
+            const localStudy = localStorage.getItem('ambedkar_admin_study');
+            if (localStudy) setDynamicStudy(JSON.parse(localStudy));
+          }
+        } catch (e) {
+          const localStudy = localStorage.getItem('ambedkar_admin_study');
           if (localStudy) setDynamicStudy(JSON.parse(localStudy));
         }
 
@@ -470,28 +491,28 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
             const remoteResults = rSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
               .filter((r: any) => !['TNPSC Group I - Prelims Mock 1', 'SSC CGL - Quant Sectional', 'Railway RRB NTPC - Mock 4', 'TNPSC Group IV - Full Length', 'SSC CHSL - English Tier 1'].includes(r.exam || r.examName));
             setDynamicResults(remoteResults);
-            safeLocalStorageSet('agamakizh_admin_results', remoteResults);
+            safeLocalStorageSet('ambedkar_admin_results', remoteResults);
           } else {
-            const localResults = localStorage.getItem('agamakizh_admin_results');
+            const localResults = localStorage.getItem('ambedkar_admin_results');
             if (localResults) {
               const parsed = JSON.parse(localResults);
               if (Array.isArray(parsed)) {
                 const filtered = parsed.filter((r: any) => !['TNPSC Group I - Prelims Mock 1', 'SSC CGL - Quant Sectional', 'Railway RRB NTPC - Mock 4', 'TNPSC Group IV - Full Length', 'SSC CHSL - English Tier 1'].includes(r.exam || r.examName));
                 setDynamicResults(filtered);
-                safeLocalStorageSet('agamakizh_admin_results', filtered);
+                safeLocalStorageSet('ambedkar_admin_results', filtered);
               }
             } else {
               setDynamicResults([]);
             }
           }
         } catch {
-          const localResults = localStorage.getItem('agamakizh_admin_results');
+          const localResults = localStorage.getItem('ambedkar_admin_results');
           if (localResults) {
             const parsed = JSON.parse(localResults);
             if (Array.isArray(parsed)) {
               const filtered = parsed.filter((r: any) => !['TNPSC Group I - Prelims Mock 1', 'SSC CGL - Quant Sectional', 'Railway RRB NTPC - Mock 4', 'TNPSC Group IV - Full Length', 'SSC CHSL - English Tier 1'].includes(r.exam || r.examName));
               setDynamicResults(filtered);
-              safeLocalStorageSet('agamakizh_admin_results', filtered);
+              safeLocalStorageSet('ambedkar_admin_results', filtered);
             }
           } else {
             setDynamicResults([]);
@@ -505,11 +526,11 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
     return () => {
       window.removeEventListener('storage', handleStorageSync);
-      window.removeEventListener('agamakizh_study_updated', handleStorageSync);
-      window.removeEventListener('agamakizh_syllabus_updated', handleStorageSync);
-      window.removeEventListener('agamakizh_quizzes_updated', handleQuizzesSync);
-      window.removeEventListener('agamakizh_results_updated', handleResultsSync);
-      window.removeEventListener('agamakizh_calendar_plan_updated', handleCalendarSync);
+      window.removeEventListener('ambedkar_study_updated', handleStorageSync);
+      window.removeEventListener('ambedkar_syllabus_updated', handleStorageSync);
+      window.removeEventListener('ambedkar_quizzes_updated', handleQuizzesSync);
+      window.removeEventListener('ambedkar_results_updated', handleResultsSync);
+      window.removeEventListener('ambedkar_calendar_plan_updated', handleCalendarSync);
       if (bc) bc.close();
     };
   }, []);
@@ -518,6 +539,15 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const [activeMockTest, setActiveMockTest] = useState<any | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [visitedQuestions, setVisitedQuestions] = useState<Record<number, boolean>>({ 1: true });
+  const [markedForReview, setMarkedForReview] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    if (currentView === 'quiz') {
+      setVisitedQuestions(prev => ({ ...prev, [currentQuestion]: true }));
+    }
+  }, [currentQuestion, currentView]);
+
   const [timeLeft, setTimeDown] = useState(10800); // 180 minutes for 200 questions
   const [isPaused, setIsPaused] = useState(false);
   const [testMedium, setTestMedium] = useState<'english' | 'tamil' | 'bilingual'>('bilingual');
@@ -531,6 +561,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   }, [activeMockTest, language]);
 
   const handleDashboardClick = () => {
+    setSelectedCourseCurriculum(null);
     setSelectedExam(null);
     setSelectedSubject(null);
     setSelectedChapter(null);
@@ -539,7 +570,9 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   };
 
   const handleBackClick = () => {
-    if (selectedChapter !== null) {
+    if (selectedCourseCurriculum !== null) {
+      setSelectedCourseCurriculum(null);
+    } else if (selectedChapter !== null) {
       setSelectedChapter(null);
     } else if (selectedSubject !== null) {
       setSelectedSubject(null);
@@ -572,6 +605,14 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const handleSettingsClick = () => {
     setSelectedExam(null);
     setCurrentView('settings');
+    setActiveMockTest(null);
+  };
+
+  const handleStoreClick = () => {
+    setSelectedExam(null);
+    setSelectedSubject(null);
+    setSelectedChapter(null);
+    setCurrentView('store');
     setActiveMockTest(null);
   };
 
@@ -645,9 +686,9 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
     const updatedResults = [newResult, ...dynamicResults];
     setDynamicResults(updatedResults);
-    safeLocalStorageSet('agamakizh_admin_results', updatedResults);
+    safeLocalStorageSet('ambedkar_admin_results', updatedResults);
     try {
-      const bc = new BroadcastChannel('agamakizh_channel');
+      const bc = new BroadcastChannel('ambedkar_channel');
       bc.postMessage({ type: 'RESULTS_UPDATED', studentResults: updatedResults });
     } catch { }
 
@@ -674,17 +715,17 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
     if (!window.confirm(language === 'english' ? 'Are you sure you want to delete this test result record?' : 'இந்த தேர்வு முடிவை நிச்சயமாக நீக்க விரும்புகிறீர்களா?')) return;
     const filtered = dynamicResults.filter(r => r.id !== id);
     setDynamicResults(filtered);
-    safeLocalStorageSet('agamakizh_admin_results', filtered);
+    safeLocalStorageSet('ambedkar_admin_results', filtered);
     try {
       await deleteDoc(doc(db, 'studentResults', String(id)));
     } catch (e) {
       console.warn('Firestore delete failed:', e);
     }
-    window.dispatchEvent(new CustomEvent('agamakizh_results_updated', {
+    window.dispatchEvent(new CustomEvent('ambedkar_results_updated', {
       detail: { studentResults: filtered }
     }));
     try {
-      const bc = new BroadcastChannel('agamakizh_channel');
+      const bc = new BroadcastChannel('ambedkar_channel');
       bc.postMessage({ type: 'RESULTS_UPDATED', studentResults: filtered });
     } catch { }
   };
@@ -693,12 +734,12 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
   const handleClearAllResults = async () => {
     if (!window.confirm(language === 'english' ? 'Are you sure you want to delete ALL test results?' : 'அனைத்து தேர்வு முடிவுகளையும் நிச்சயமாக நீக்க விரும்புகிறீர்களா?')) return;
     setDynamicResults([]);
-    safeLocalStorageSet('agamakizh_admin_results', []);
-    window.dispatchEvent(new CustomEvent('agamakizh_results_updated', {
+    safeLocalStorageSet('ambedkar_admin_results', []);
+    window.dispatchEvent(new CustomEvent('ambedkar_results_updated', {
       detail: { studentResults: [] }
     }));
     try {
-      const bc = new BroadcastChannel('agamakizh_channel');
+      const bc = new BroadcastChannel('ambedkar_channel');
       bc.postMessage({ type: 'RESULTS_UPDATED', studentResults: [] });
     } catch { }
   };
@@ -830,14 +871,14 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           </AnimatePresence>
 
           {/* Question Area */}
-          <main className="flex-1 overflow-y-auto p-12 bg-slate-50">
-            <div className="max-w-3xl mx-auto">
-              <div className="mb-8 flex items-center justify-between">
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-100/70 flex flex-col">
+            <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col justify-between">
+              <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 shadow-2xs">
                     Q. {currentQuestion}
                   </span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-white px-2 py-1 rounded border border-slate-200">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white px-2.5 py-1 rounded border border-slate-200">
                     {activeMockTest.difficulty}
                   </span>
                 </div>
@@ -864,18 +905,18 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
                 return (
                   <>
-                    <div className="bg-white p-7 sm:p-10 rounded-3xl border border-slate-200 shadow-sm mb-8">
+                    <div className="bg-white p-5 sm:p-7 rounded-2xl border border-slate-200/90 shadow-xs mb-5 flex-1 flex flex-col">
                       {/* Language Switcher Bar on Card */}
-                      <div className="flex flex-wrap items-center justify-between pb-4 mb-6 border-b border-slate-100 gap-3">
+                      <div className="flex flex-wrap items-center justify-between pb-3 mb-5 border-b border-slate-100 gap-3">
                         <div className="flex items-center gap-2">
                           <Globe className="w-4 h-4 text-blue-600 shrink-0" />
                           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Language / மொழி:</span>
                         </div>
-                        <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200/80 shadow-2xs">
+                        <div className="flex items-center p-0.5 bg-slate-100 rounded-lg border border-slate-200/80">
                           <button
                             type="button"
                             onClick={() => setTestMedium('bilingual')}
-                            className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${testMedium === 'bilingual' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${testMedium === 'bilingual' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
                             Bilingual (English + தமிழ்)
@@ -883,7 +924,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                           <button
                             type="button"
                             onClick={() => setTestMedium('english')}
-                            className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${testMedium === 'english' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${testMedium === 'english' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
                             English
@@ -891,7 +932,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                           <button
                             type="button"
                             onClick={() => setTestMedium('tamil')}
-                            className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${testMedium === 'tamil' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all cursor-pointer ${testMedium === 'tamil' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                               }`}
                           >
                             தமிழ்
@@ -900,14 +941,14 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
 
                       {/* Question Text */}
-                      <div className="space-y-2.5 mb-8">
+                      <div className="space-y-2 mb-6">
                         {(testMedium === 'english' || testMedium === 'bilingual') && (
-                          <h2 className="text-lg sm:text-xl font-bold text-slate-900 leading-relaxed">
+                          <h2 className="text-[12px] font-bold text-slate-900 leading-relaxed">
                             {qItem.textEn}
                           </h2>
                         )}
                         {(testMedium === 'tamil' || (testMedium === 'bilingual' && qItem.textTa && qItem.textTa !== qItem.textEn)) && (
-                          <h3 className={`font-semibold text-slate-800 leading-relaxed ${testMedium === 'bilingual' ? 'text-base sm:text-lg text-indigo-950/90 pt-1.5 border-t border-slate-100' : 'text-lg sm:text-xl text-slate-900'
+                          <h3 className={`font-semibold text-slate-800 leading-relaxed ${testMedium === 'bilingual' ? 'text-[12px] text-indigo-950/90 pt-1.5 border-t border-slate-100' : 'text-[12px] text-slate-900'
                             }`}>
                             {qItem.textTa || qItem.textEn}
                           </h3>
@@ -915,7 +956,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
 
                       {/* Options */}
-                      <div className="space-y-3.5">
+                      <div className="space-y-3 mb-4">
                         {qItem.optionsEn.map((optEn: string, idx: number) => {
                           const optTa = qItem.optionsTa && qItem.optionsTa[idx] ? qItem.optionsTa[idx] : '';
                           const isSelected = answers[currentQuestion] === idx;
@@ -926,29 +967,29 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                               key={idx}
                               type="button"
                               onClick={() => setAnswers({ ...answers, [currentQuestion]: idx })}
-                              className={`w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all flex items-center justify-between group cursor-pointer ${isSelected
-                                ? 'border-blue-600 bg-blue-50/60 text-blue-900 shadow-sm'
-                                : 'border-slate-100 hover:border-slate-200 text-slate-700 hover:bg-slate-50'
+                              className={`w-full text-left p-3.5 sm:p-4 rounded-xl border-2 transition-all flex items-center justify-between group cursor-pointer ${isSelected
+                                ? 'border-blue-600 bg-blue-50/70 text-blue-900 shadow-xs'
+                                : 'border-slate-200/80 hover:border-blue-300 text-slate-700 hover:bg-slate-50/80'
                                 }`}
                             >
-                              <div className="flex items-start gap-4 flex-1">
-                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 transition-colors ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
+                              <div className="flex items-start gap-3.5 flex-1">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[12px] font-bold shrink-0 transition-colors ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
                                   }`}>
                                   {letter}
                                 </div>
-                                <div className="flex flex-col flex-1">
+                                <div className="flex flex-col flex-1 justify-center">
                                   {(testMedium === 'english' || testMedium === 'bilingual') && (
-                                    <span className="text-sm font-medium text-slate-900 leading-snug">{optEn}</span>
+                                    <span className="text-[12px] font-medium text-slate-900 leading-snug">{optEn}</span>
                                   )}
                                   {(testMedium === 'tamil' || (testMedium === 'bilingual' && optTa && optTa !== optEn)) && (
-                                    <span className={`${testMedium === 'bilingual' ? 'text-xs text-indigo-900/80 font-normal mt-0.5' : 'text-sm font-medium text-slate-900'}`}>
+                                    <span className={`${testMedium === 'bilingual' ? 'text-[12px] text-indigo-900/85 font-normal mt-0.5' : 'text-[12px] font-medium text-slate-900'}`}>
                                       {optTa}
                                     </span>
                                   )}
                                 </div>
                               </div>
                               {isSelected && (
-                                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-md shadow-blue-500/30 shrink-0 ml-3">
+                                <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-xs shadow-blue-500/30 shrink-0 ml-3">
                                   <CheckCircle2 className="h-3.5 w-3.5 text-white" />
                                 </div>
                               )}
@@ -959,16 +1000,30 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                     </div>
 
                     {/* Navigation Buttons */}
-                    <div className="flex items-center justify-between mt-10">
-                      <button
-                        type="button"
-                        disabled={currentQuestion === 1}
-                        onClick={() => setCurrentQuestion(prev => prev - 1)}
-                        className="px-6 sm:px-8 py-3 text-sm font-bold text-slate-500 hover:text-slate-900 disabled:opacity-30 flex items-center gap-2.5 transition-colors bg-white border border-slate-200 rounded-2xl cursor-pointer"
-                      >
-                        <ChevronLeft className="h-4 w-4" /> Previous
-                      </button>
-                      <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                      <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                        <button
+                          type="button"
+                          className="px-4 py-2.5 text-xs font-bold text-[#FF5C77] bg-white border border-[#FF5C77]/60 rounded-lg flex items-center gap-2 hover:bg-rose-50 transition-colors cursor-pointer shadow-2xs"
+                        >
+                          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                          </svg>
+                          Report
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMarkedForReview(prev => ({ ...prev, [currentQuestion]: true }));
+                            setCurrentQuestion(prev => Math.min(activeMockTest.qCount, prev + 1));
+                          }}
+                          className="px-4 py-2.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
+                        >
+                          Mark for Review & Next
+                        </button>
+
                         <button
                           type="button"
                           onClick={() => setAnswers((prev) => {
@@ -976,10 +1031,13 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                             delete next[currentQuestion];
                             return next;
                           })}
-                          className="px-4 sm:px-6 py-3 text-xs font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest cursor-pointer"
+                          className="px-4 py-2.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer shadow-2xs"
                         >
-                          Clear Choice
+                          Clear Response
                         </button>
+                      </div>
+
+                      <div className="w-full sm:w-auto flex justify-end">
                         <button
                           type="button"
                           onClick={() => {
@@ -989,13 +1047,14 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                               setCurrentQuestion(prev => Math.min(activeMockTest.qCount, prev + 1));
                             }
                           }}
-                          className={`px-8 sm:px-10 py-3 rounded-2xl text-sm font-bold transition-all shadow-xl flex items-center gap-3 cursor-pointer ${isFinalQuestion
-                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
-                            : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/10'
-                            }`}
+                          className="w-full sm:w-auto px-7 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm min-w-[130px] cursor-pointer"
                         >
-                          {isFinalQuestion ? 'Submit Test (சமர்ப்பி)' : 'Next Question'}
-                          <ChevronRight className="h-4 w-4" />
+                          {isFinalQuestion ? 'Submit Test' : 'Save & Next'}
+                          {!isFinalQuestion && (
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -1064,45 +1123,125 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
             )}
           </AnimatePresence>
 
-          {/* Question Grid Sidebar */}
-          <aside className="w-80 border-l border-slate-100 bg-white flex flex-col overflow-hidden">
-            <div className="p-6 border-b border-slate-50 bg-slate-50/50">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Question Palette</h3>
-              <p className="text-sm font-bold text-slate-900">Total {activeMockTest.qCount} Questions</p>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="grid grid-cols-5 gap-2">
-                {Array.from({ length: activeMockTest.qCount }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentQuestion(i + 1)}
-                    className={`h-10 rounded-lg text-[10px] font-bold transition-all border ${currentQuestion === i + 1
-                      ? 'border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-200 scale-105 z-10'
-                      : answers[i + 1] !== undefined
-                        ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
-                        : 'bg-slate-50 border-slate-100 text-slate-400 hover:bg-slate-100'
-                      }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
+          {/* Question Grid Sidebar - Pentagon Design */}
+          <aside className="w-80 border-l border-slate-100 bg-white flex flex-col overflow-hidden shrink-0">
+            {/* User Profile */}
+            <div className="p-4 border-b border-slate-100 flex items-center justify-end gap-3">
+              <span className="text-xs font-bold text-slate-700">Student</span>
+              <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0">
+                <img src="https://ui-avatars.com/api/?name=Student&background=1A73E8&color=fff" alt="User" />
               </div>
             </div>
 
-            <div className="p-6 border-t border-slate-100 space-y-3 bg-slate-50/30">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded bg-blue-600" />
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Current</span>
+            {/* Stats Grid */}
+            <div className="p-4 border-b border-slate-100 text-[10px] font-bold text-slate-700">
+              <div className="grid grid-cols-2 gap-y-4 gap-x-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-[#00C897] text-white flex items-center justify-center pt-1" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' }}>
+                    {Object.keys(answers).length}
+                  </div>
+                  <span>Answered</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-[#FF5C77] text-white flex items-center justify-center pt-1" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' }}>
+                    {Object.keys(visitedQuestions).length - Object.keys(answers).length}
+                  </div>
+                  <span>Not Answered</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-[#FFB800] text-white flex items-center justify-center rounded-sm">
+                    {Object.keys(markedForReview).filter(k => !answers[Number(k)]).length}
+                  </div>
+                  <span className="leading-tight">Marked for<br />Review</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-white border border-slate-200 text-slate-600 flex items-center justify-center pt-1" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' }}>
+                    {activeMockTest.qCount - Object.keys(visitedQuestions).length}
+                  </div>
+                  <span>Not Visited</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded bg-emerald-500" />
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Answered</span>
+              <div className="flex items-center gap-2 mt-4">
+                <div className="w-6 h-6 rounded-full bg-slate-500 text-white flex items-center justify-center relative">
+                  <div className="w-2 h-2 rounded-full bg-white absolute bottom-1 right-1"></div>
+                  {Object.keys(markedForReview).filter(k => answers[Number(k)] !== undefined).length}
+                </div>
+                <span>Answered & Marked for Review</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded bg-slate-100" />
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Unvisited</span>
+            </div>
+
+            {/* Section Header */}
+            <div className="bg-[#6B7280] text-white text-center text-xs font-bold py-2 shadow-inner">
+              {activeMockTest.category || 'General Section'}
+            </div>
+
+            {/* Grid */}
+            <div className="flex-1 overflow-y-auto p-4 bg-[#F8FAFC]">
+              <div className="grid grid-cols-5 gap-3">
+                {Array.from({ length: activeMockTest.qCount }).map((_, i) => {
+                  const qNum = i + 1;
+                  const isCurrent = currentQuestion === qNum;
+                  const isAnswered = answers[qNum] !== undefined;
+                  const isVisited = visitedQuestions[qNum];
+                  const isMarked = markedForReview[qNum];
+
+                  let shapeClass = "w-10 h-10 flex items-center justify-center text-xs font-bold transition-all relative pt-1 ";
+                  let style = {};
+
+                  if (isCurrent) {
+                    shapeClass = "w-10 h-10 flex items-center justify-center text-xs font-bold transition-all bg-[#1A73E8] text-white rounded-md shadow-md scale-105 z-10";
+                  } else if (isMarked && isAnswered) {
+                    shapeClass += "bg-slate-500 text-white rounded-full shadow-sm";
+                    return (
+                      <button key={i} onClick={() => { setVisitedQuestions(prev => ({ ...prev, [qNum]: true })); setCurrentQuestion(qNum); }} className={shapeClass}>
+                        {qNum}
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#00C897] absolute bottom-0 right-0 border border-white"></div>
+                      </button>
+                    );
+                  } else if (isMarked) {
+                    shapeClass = "w-10 h-10 flex items-center justify-center text-xs font-bold transition-all bg-[#FFB800] text-white rounded-md shadow-sm";
+                  } else if (isAnswered) {
+                    shapeClass += "bg-[#00C897] text-white shadow-sm";
+                    style = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' };
+                  } else if (isVisited) {
+                    shapeClass += "bg-[#FF5C77] text-white shadow-sm";
+                    style = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' };
+                  } else {
+                    shapeClass += "bg-white border border-slate-200 text-slate-600 shadow-sm hover:bg-slate-50";
+                    style = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 100%, 0% 100%, 0% 25%)' };
+                  }
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setVisitedQuestions(prev => ({ ...prev, [qNum]: true }));
+                        setCurrentQuestion(qNum);
+                      }}
+                      className={shapeClass}
+                      style={style}
+                    >
+                      {qNum}
+                    </button>
+                  );
+                })}
               </div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="p-4 border-t border-slate-100 flex gap-2">
+              <button
+                onClick={() => { setCurrentView('dashboard'); setSelectedExam(null); setActiveMockTest(null); }}
+                className="flex-1 bg-white border border-slate-200 text-[#1A73E8] font-bold py-2.5 rounded-md text-xs hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                Skip Section
+              </button>
+              <button
+                onClick={() => setShowSubmitModal(true)}
+                className="flex-1 bg-[#1A73E8] text-white font-bold py-2.5 rounded-md text-xs hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Submit
+              </button>
             </div>
           </aside>
         </div>
@@ -1125,7 +1264,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
       </AnimatePresence>
       {/* Sidebar */}
       <aside className={`w-72 sm:w-64 bg-[#2b274e] border-r border-[#2b274e] flex flex-col absolute lg:static inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out ${showMobileMenu ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <button 
+        <button
           onClick={() => setShowMobileMenu(false)}
           className="lg:hidden absolute right-4 top-6 text-white/50 hover:text-white"
         >
@@ -1137,7 +1276,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
               <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-lg tracking-tight text-white leading-tight">
-              Agamakizh <br />
+              Ambedkar <br />
               <span className="text-[10px] uppercase tracking-[0.2em] text-blue-300 block">IAS Academy</span>
             </span>
           </div>
@@ -1167,12 +1306,14 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
               active={currentView === 'marks'}
               onClick={handleMarksClick}
             />
+
             <SidebarLink
               icon={<Store className="h-4 w-4" />}
-              label={language === 'english' ? 'Academy Store' : 'புத்தகக் கடை'}
+              label={language === 'english' ? 'Premium Store' : 'பிரீமியம் ஸ்டோர்'}
               active={currentView === 'store'}
-              onClick={() => { setCurrentView('store'); setSelectedExam(null); setActiveMockTest(null); }}
+              onClick={handleStoreClick}
             />
+
             <SidebarLink
               icon={<Settings className="h-4 w-4" />}
               label={language === 'english' ? 'Settings' : 'அமைப்புகள்'}
@@ -1193,25 +1334,25 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
               target="_blank"
               rel="noopener noreferrer"
               className="h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition-all hover:scale-105"
-              title="YouTube (@agamakizhiasacademy)"
+              title="YouTube (@ambedkariasacademy)"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
               </svg>
             </a>
             <a
-              href="https://www.instagram.com/agamakizh_ias_academy"
+              href="https://www.instagram.com/ambedkar_ias_academy"
               target="_blank"
               rel="noopener noreferrer"
               className="h-8 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-600 flex items-center justify-center transition-all hover:scale-105"
-              title="Instagram (@agamakizh_ias_academy)"
+              title="Instagram (@ambedkar_ias_academy)"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
               </svg>
             </a>
             <a
-              href="https://whatsapp.com/channel/0029VaAgamakizh"
+              href="https://whatsapp.com/channel/0029VaAmbedkar"
               target="_blank"
               rel="noopener noreferrer"
               className="h-8 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center transition-all hover:scale-105"
@@ -1222,11 +1363,11 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
               </svg>
             </a>
             <a
-              href="https://t.me/AgamakizhIAS"
+              href="https://t.me/AmbedkarIAS"
               target="_blank"
               rel="noopener noreferrer"
               className="h-8 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 flex items-center justify-center transition-all hover:scale-105"
-              title="Telegram (@AgamakizhIAS)"
+              title="Telegram (@AmbedkarIAS)"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.197 1.006.128.832.942z" />
@@ -1252,7 +1393,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 shrink-0">
           <div className="flex items-center gap-4 flex-1">
             <div className="lg:hidden flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => setShowMobileMenu(true)}
                 className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors cursor-pointer"
               >
@@ -1262,7 +1403,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                 <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
               </div>
             </div>
-            {(selectedExam || selectedSubject || selectedChapter !== null || currentView !== 'dashboard') && (
+            {(selectedCourseCurriculum || selectedExam || selectedSubject || selectedChapter !== null || currentView !== 'dashboard') && (
               <button
                 onClick={handleBackClick}
                 className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 cursor-pointer"
@@ -1390,7 +1531,27 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
         <div className="flex-1 overflow-y-auto p-4 sm:p-8 pb-24 lg:pb-8">
           <div className="max-w-6xl mx-auto">
             {currentView === 'dashboard' ? (
-              !selectedExam ? (
+              selectedCourseCurriculum ? (
+                <CourseCurriculumView
+                  courseName={selectedCourseCurriculum.title}
+                  price={selectedCourseCurriculum.price || 299}
+                  originalPrice={selectedCourseCurriculum.originalPrice || 2999}
+                  discountPercent={selectedCourseCurriculum.discountPercent || 90}
+                  language={language}
+                  onLanguageChange={toggleLanguage}
+                  onBack={() => setSelectedCourseCurriculum(null)}
+                  onStartQuiz={(quizDetails) => {
+                    startTest({
+                      id: `free-test-${Date.now()}`,
+                      title: quizDetails.title,
+                      category: quizDetails.category,
+                      difficulty: 'Medium',
+                      duration: quizDetails.duration,
+                      questions: quizDetails.questionsCount
+                    });
+                  }}
+                />
+              ) : !selectedExam ? (
                 <>
                   {/* Branding Box */}
                   <div className="flex justify-center mb-12">
@@ -1405,7 +1566,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                         <img src={logoImage} alt="Logo" className="w-full h-full object-cover rounded-full" />
                       </div>
                       <div className="mt-auto mb-10 z-10 text-center">
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Agamakizh</h2>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Ambedkar</h2>
                         <div className="flex items-center justify-center gap-2 mt-2">
                           <span className="h-px w-3 bg-blue-600/20" />
                           <span className="text-[11px] font-bold text-blue-600 uppercase tracking-[0.3em]">IAS Academy</span>
@@ -1471,8 +1632,8 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                             type="button"
                             onClick={() => setActiveTab(pill.id)}
                             className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all whitespace-nowrap cursor-pointer ${activeTab === pill.id
-                                ? 'bg-white text-blue-700 shadow-sm border border-slate-200/60'
-                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                              ? 'bg-white text-blue-700 shadow-sm border border-slate-200/60'
+                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                               }`}
                           >
                             {pill.label}
@@ -2916,7 +3077,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                       <div>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-bold uppercase tracking-wider mb-2">
                           <Sparkles className="h-3.5 w-3.5 text-blue-400" />
-                          <span>Official Agamakizh Academy Learning Network</span>
+                          <span>Official Ambedkar Academy Learning Network</span>
                         </div>
                         <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                           Connect with YouTube, Instagram, WhatsApp & Telegram
@@ -2939,7 +3100,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {/* YouTube */}
                       <a
-                        href="https://www.youtube.com/@agamakizhiasacademy"
+                        href="https://www.youtube.com/@ambedkariasacademy"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-red-500/40 rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between hover:-translate-y-0.5 shadow-sm"
@@ -2966,7 +3127,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
                       {/* Instagram */}
                       <a
-                        href="https://www.instagram.com/agamakizh_ias_academy"
+                        href="https://www.instagram.com/ambedkar_ias_academy"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-pink-500/40 rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between hover:-translate-y-0.5 shadow-sm"
@@ -2993,7 +3154,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
                       {/* WhatsApp */}
                       <a
-                        href="https://whatsapp.com/channel/0029VaAgamakizh"
+                        href="https://whatsapp.com/channel/0029VaAmbedkar"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-500/40 rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between hover:-translate-y-0.5 shadow-sm"
@@ -3020,7 +3181,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
 
                       {/* Telegram */}
                       <a
-                        href="https://t.me/AgamakizhIAS"
+                        href="https://t.me/AmbedkarIAS"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-500/40 rounded-2xl p-4 transition-all duration-200 flex flex-col justify-between hover:-translate-y-0.5 shadow-sm"
@@ -3320,7 +3481,24 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
                 </AnimatePresence>
               </motion.div>
             ) : currentView === 'store' ? (
-              <StoreView language={language} />
+              <StoreView
+                language={language}
+                onStartFreeTest={(course) => {
+                  setSelectedCourseCurriculum(course);
+                  setCurrentView('dashboard');
+                }}
+                onSelectCourse={(courseId) => {
+                  const targetExam = exams.find(e => e.id.toLowerCase().includes(courseId.toLowerCase()) || courseId.toLowerCase().includes(e.id.toLowerCase()));
+                  setSelectedCourseCurriculum({
+                    id: courseId,
+                    title: targetExam ? targetExam.name : courseId,
+                    price: 299,
+                    originalPrice: 2999,
+                    discountPercent: 90
+                  });
+                  setCurrentView('dashboard');
+                }}
+              />
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -3745,7 +3923,7 @@ export default function ExamDashboard({ onLogout }: { onLogout: () => void }) {
           <Dumbbell className="h-5 w-5 mb-1" />
           <span className={`text-[10px] ${currentView === 'quiz' ? 'font-bold' : 'font-medium'}`}>Practice</span>
         </button>
-        <button onClick={() => { setCurrentView('store'); setShowMobileMenu(false); }} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'store' ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'}`}>
+        <button onClick={handleStoreClick} className={`flex flex-col items-center p-2 cursor-pointer transition-colors ${currentView === 'store' ? 'text-slate-900 font-bold' : 'text-slate-400 hover:text-slate-700'}`}>
           <Store className="h-5 w-5 mb-1" />
           <span className={`text-[10px] ${currentView === 'store' ? 'font-bold' : 'font-medium'}`}>Store</span>
         </button>

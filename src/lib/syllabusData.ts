@@ -21,7 +21,10 @@ export const initialSyllabi: Record<string, ExamSyllabusItem> = {
     fileSize: '1.8 MB',
     description: 'The comprehensive syllabus covers all major topics required for the TNPSC Group I examination, updated according to the latest 2024 notifications.',
     topics: [
-      'General Science (Physics, Chemistry, Botany, Zoology)',
+      'General Science: Nature of Universe - Measurement of physical quantities - General scientific laws in motion - force, pressure, and energy - Everyday application of mechanics, electricity, magnetism, light, sound, heat, and nuclear physics',
+      'General Science (Chemistry): Elements and compounds, acids, bases, salts, petroleum products, fertilizers, pesticides, metallurgy, and food adulterants',
+      'General Science (Life Science): Classification of living organisms, evolution, genetics, physiology, nutrition, health and hygiene, human diseases',
+      'General Science: Environmental science, latest inventions in science and technology, and current affairs',
       'Current Events (National & International, Sports, Awards)',
       'Geography of India & Tamil Nadu',
       'History and Culture of India',

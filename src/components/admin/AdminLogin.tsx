@@ -25,9 +25,10 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
     // Quick local development credentials check
     if (
       (email.toLowerCase() === 'admin@agamakizh.com' && password === 'admin123') ||
+      (email.toLowerCase() === 'admin@ambedkar.com' && password === 'admin123') ||
       (email.toLowerCase().includes('admin') && password.length >= 4)
     ) {
-      localStorage.setItem('agamakizh_admin_session', JSON.stringify({ email, role: 'admin', time: Date.now() }));
+      localStorage.setItem('ambedkar_admin_session', JSON.stringify({ email: email || 'admin@agamakizh.com', role: 'admin', time: Date.now() }));
       setTimeout(() => {
         setIsLoading(false);
         onLogin();
@@ -44,14 +45,14 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
           role: 'admin',
           name: 'Main Admin'
         });
-        localStorage.setItem('agamakizh_admin_session', JSON.stringify({ email, role: 'admin', uid: userCredential.user.uid }));
+        localStorage.setItem('ambedkar_admin_session', JSON.stringify({ email, role: 'admin', uid: userCredential.user.uid }));
         onLogin();
       } else {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
         
         if (userDoc.exists() && userDoc.data().role === 'admin') {
-          localStorage.setItem('agamakizh_admin_session', JSON.stringify({ email, role: 'admin', uid: userCredential.user.uid }));
+          localStorage.setItem('ambedkar_admin_session', JSON.stringify({ email, role: 'admin', uid: userCredential.user.uid }));
           onLogin();
         } else {
           await auth.signOut();
@@ -74,7 +75,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
   };
 
   const handleQuickDevLogin = () => {
-    localStorage.setItem('agamakizh_admin_session', JSON.stringify({ email: 'admin@agamakizh.com', role: 'admin', dev: true }));
+    localStorage.setItem('ambedkar_admin_session', JSON.stringify({ email: 'admin@agamakizh.com', role: 'admin', dev: true }));
     onLogin();
   };
 
@@ -97,7 +98,7 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
             <h1 className="text-2xl font-black text-white tracking-tight">
               {isFirstTime ? 'Initialize Admin' : 'Admin Gateway'}
             </h1>
-            <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mt-2">Agamakizh IAS Academy</p>
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mt-2">Ambedkar IAS Academy</p>
           </div>
 
           <form onSubmit={handleLogin} noValidate className="space-y-5">

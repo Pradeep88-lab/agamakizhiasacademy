@@ -1,5 +1,5 @@
 // Storage utility with safe localStorage and IndexedDB fallback for large PDFs
-const DB_NAME = 'agamakizh_app_db';
+const DB_NAME = 'ambedkar_app_db';
 const STORE_NAME = 'blobs';
 
 function openIndexedDB(): Promise<IDBDatabase> {

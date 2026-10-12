@@ -32,7 +32,7 @@ interface UserAccount {
 
 const getStoredAccounts = (): UserAccount[] => {
   try {
-    const saved = localStorage.getItem('agamakizh_accounts');
+    const saved = localStorage.getItem('ambedkar_accounts');
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -53,7 +53,7 @@ const getStoredAccounts = (): UserAccount[] => {
     },
     {
       name: 'Candidate Student',
-      email: 'student@agamakizh.com',
+      email: 'student@ambedkar.com',
       mobile: '9840012345',
       password: 'password123'
     }
@@ -67,7 +67,7 @@ const saveAccount = (account: UserAccount) => {
       a => a.email.toLowerCase() !== account.email.toLowerCase() && a.mobile !== account.mobile
     );
     filtered.push(account);
-    localStorage.setItem('agamakizh_accounts', JSON.stringify(filtered));
+    localStorage.setItem('ambedkar_accounts', JSON.stringify(filtered));
   } catch {}
 };
 
@@ -258,7 +258,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         }
         return acc;
       });
-      localStorage.setItem('agamakizh_accounts', JSON.stringify(updatedAccounts));
+      localStorage.setItem('ambedkar_accounts', JSON.stringify(updatedAccounts));
 
       setIsLoading(true);
       setTimeout(() => {
@@ -312,7 +312,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
           const num = cleanId.replace(/\D/g, '');
           displayMobile = `+91 ${num}`;
           displayName = `Student ${num.slice(-4)}`;
-          displayEmail = `student${num.slice(-4)}@agamakizh.com`;
+          displayEmail = `student${num.slice(-4)}@ambedkar.com`;
         } else if (cleanId.includes('@')) {
           displayEmail = cleanId;
           const userPart = cleanId.split('@')[0];
@@ -323,7 +323,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       }
 
       // Store in localStorage for ExamDashboard
-      localStorage.setItem('agamakizh_student_session', JSON.stringify({
+      localStorage.setItem('ambedkar_student_session', JSON.stringify({
         name: displayName,
         email: displayEmail,
         mobile: displayMobile,
@@ -376,14 +376,14 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
           <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center overflow-hidden border border-white/30 shadow-xl mb-3">
             <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
           </div>
-          <p className="text-white font-black text-xl leading-none tracking-tight">Agamakizh</p>
+          <p className="text-white font-black text-xl leading-none tracking-tight">Ambedkar</p>
           <p className="text-blue-200 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">IAS Academy</p>
         </div>
 
         {/* Hero text — centered */}
         <div className="relative z-10 text-center">
           <h2 className="text-4xl font-black text-white leading-tight tracking-tight mb-4">
-            Hello<br />Agamakizh<br />IAS Academy
+            Hello<br />Ambedkar<br />IAS Academy
           </h2>
           <p className="text-blue-100 text-sm leading-relaxed max-w-xs mx-auto">
             Your personalized IAS exam preparation hub — study notes, mock tests, syllabus tracker &amp; live calendar plans.
@@ -407,7 +407,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         </div>
 
         <p className="relative z-10 text-blue-300/70 text-[11px] font-medium text-center">
-          © {new Date().getFullYear()} Agamakizh IAS Academy. All rights reserved.
+          © {new Date().getFullYear()} Ambedkar IAS Academy. All rights reserved.
         </p>
       </div>
 
@@ -431,7 +431,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-slate-900/10 overflow-hidden border border-slate-100 mb-3">
                 <img src={logoImage} alt="Logo" className="w-full h-full object-cover" />
               </div>
-              <span className="font-bold text-lg tracking-tight text-slate-900 leading-none">Agamakizh</span>
+              <span className="font-bold text-lg tracking-tight text-slate-900 leading-none">Ambedkar</span>
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600 mt-1">IAS Academy</span>
             </div>
 
@@ -1085,7 +1085,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 mb-3">
                   <span className="text-2xl">🎉</span>
                 </div>
-                <h3 className="text-lg font-black text-slate-900 tracking-tight">Welcome to Agamakizh!</h3>
+                <h3 className="text-lg font-black text-slate-900 tracking-tight">Welcome to Ambedkar!</h3>
                 <p className="text-xs text-slate-500 mt-1">Notifications sent to your registered contact</p>
               </div>
 
@@ -1105,7 +1105,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                     <span className="text-[10px] text-emerald-400">just now</span>
                   </div>
                   <p className="text-xs font-semibold text-slate-800 leading-snug">
-                    Hello Agamakizh IAS Academy 🎓<br />
+                    Hello Ambedkar IAS Academy 🎓<br />
                     <span className="text-slate-600 font-normal">TNPSC · SSC · Railway Free Class — Happy Learning! 🚀</span>
                   </p>
                 </div>

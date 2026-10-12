@@ -8,7 +8,7 @@ interface FloatingContactProps {
 
 export default function FloatingContact({ 
   whatsappNumber, 
-  whatsappMessage = "Hello! I need some help with Agamakizh IAS Academy." 
+  whatsappMessage = "Hello! I need some help with Ambedkar IAS Academy." 
 }: FloatingContactProps) {
 
   const handleWhatsApp = () => {

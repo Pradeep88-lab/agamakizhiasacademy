@@ -47,7 +47,7 @@ export function downloadStudentMarksPdf(
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.text('AGAMAKIZH IAS ACADEMY', 14, 18);
+  doc.text('AMBEDKAR IAS ACADEMY', 14, 18);
 
   // Subtitle
   doc.setFont('helvetica', 'normal');
@@ -274,9 +274,9 @@ export function downloadStudentMarksPdf(
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(148, 163, 184); // slate-400
-  doc.text('Generated electronically via Agamakizh IAS Academy Learning Portal.', 14, footerY);
+  doc.text('Generated electronically via Ambedkar IAS Academy Learning Portal.', 14, footerY);
   doc.text('Valid without physical ink signature when verified with official roll number.', 14, footerY + 4);
-  doc.text('Website: www.agamakizh.in • Support: support@agamakizh.edu.in', 14, footerY + 8);
+  doc.text('Website: www.ambedkar.in • Support: support@ambedkar.edu.in', 14, footerY + 8);
 
   // Controller Signature Stamp
   doc.setFont('helvetica', 'bold');
@@ -286,7 +286,7 @@ export function downloadStudentMarksPdf(
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text('Agamakizh IAS Academy, Tamil Nadu', pageWidth - 14, footerY + 4, { align: 'right' });
+  doc.text('Ambedkar IAS Academy, Tamil Nadu', pageWidth - 14, footerY + 4, { align: 'right' });
   doc.text('Official Seal & Verified Transcript', pageWidth - 14, footerY + 8, { align: 'right' });
 
   // Save the PDF
@@ -322,7 +322,7 @@ export function downloadSingleResultPdf(
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.text('AGAMAKIZH IAS ACADEMY', 14, 18);
+  doc.text('AMBEDKAR IAS ACADEMY', 14, 18);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
@@ -479,8 +479,8 @@ export function downloadSingleResultPdf(
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(148, 163, 184);
-  doc.text('Official Examination Transcript issued by Agamakizh IAS Academy.', 14, footerY);
-  doc.text('Verify credentials online via Agamakizh Aspirant Portal.', 14, footerY + 4);
+  doc.text('Official Examination Transcript issued by Ambedkar IAS Academy.', 14, footerY);
+  doc.text('Verify credentials online via Ambedkar Aspirant Portal.', 14, footerY + 4);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
@@ -489,7 +489,7 @@ export function downloadSingleResultPdf(
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
-  doc.text('Agamakizh IAS Academy, Tamil Nadu', pageWidth - 14, footerY + 4, { align: 'right' });
+  doc.text('Ambedkar IAS Academy, Tamil Nadu', pageWidth - 14, footerY + 4, { align: 'right' });
 
   const safeExam = (examTitle).replace(/[^a-zA-Z0-9]/g, '_').substring(0, 25);
   const safeName = (candidateName).replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
@@ -519,7 +519,7 @@ export function downloadAdminResultsMasterPdf(results: StudentResultItem[]) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   doc.setTextColor(255, 255, 255);
-  doc.text('AGAMAKIZH IAS ACADEMY — ADMINISTRATIVE CONSOLE', 14, 16);
+  doc.text('AMBEDKAR IAS ACADEMY — ADMINISTRATIVE CONSOLE', 14, 16);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
@@ -608,7 +608,7 @@ export function downloadAdminResultsMasterPdf(results: StudentResultItem[]) {
     currentY += 7.5;
   });
 
-  doc.save(`Agamakizh_Master_Results_${todayStr.replace(/\s+/g, '_')}.pdf`);
+  doc.save(`Ambedkar_Master_Results_${todayStr.replace(/\s+/g, '_')}.pdf`);
   return true;
 }
 
@@ -641,7 +641,7 @@ export function download2026CalendarPlanPdf(
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
-    doc.text('AGAMAKIZH IAS ACADEMY', 14, 12);
+    doc.text('AMBEDKAR IAS ACADEMY', 14, 12);
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8.5);
@@ -770,9 +770,9 @@ export function download2026CalendarPlanPdf(
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(148, 163, 184);
-  doc.text('Agamakizh IAS Academy • 2026 Academic Calendar Planner • Verified & Approved by Academic Council', 14, pageHeight - 6);
+  doc.text('Ambedkar IAS Academy • 2026 Academic Calendar Planner • Verified & Approved by Academic Council', 14, pageHeight - 6);
 
-  doc.save(`Agamakizh_2026_Study_Calendar_${new Date().toISOString().split('T')[0]}.pdf`);
+  doc.save(`Ambedkar_2026_Study_Calendar_${new Date().toISOString().split('T')[0]}.pdf`);
   return true;
 }
 
