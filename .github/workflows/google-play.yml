@@ -1,4 +1,4 @@
-name: Release Agamakizh IAS Academy
+name: Release Ambedkar IAS Academy
 
 on:
   push:
@@ -76,7 +76,9 @@ jobs:
           generate_release_notes: true
 
       - name: Upload to Google Play (Internal Track)
-        if: "${{ secrets.SERVICE_ACCOUNT_JSON != '' }}"
+        if: env.SERVICE_ACCOUNT_JSON != ''
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
